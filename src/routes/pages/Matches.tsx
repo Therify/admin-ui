@@ -12,6 +12,8 @@ import {
     Text,
     ButtonOutline,
     ButtonFill,
+    Checkbox,
+    TextSmall,
 } from '../../components/ui';
 import { MatchTypes } from '../../types';
 import { useTheme, Box, CircularProgress } from '@material-ui/core';
@@ -27,6 +29,7 @@ import { countMatchQualities } from '../../utils/MatchQuality';
 
 export const Matches = () => {
     const theme = useTheme();
+    const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
     const { isLoadingProviders, getProviders, getProvidersError, providers } = useMatchesApi();
     const { approveMatchesForUser } = useApproveMatch({ withAlerts: true });
     const { isCreatingRanking, createRanking, createRankingError } = useCreateRanking({ withAlerts: true });
@@ -38,7 +41,9 @@ export const Matches = () => {
     const [companyFilter, setCompanyFilter] = useState('all');
     const [createMatchTarget, setCreateMatchTarget] = useState<MatchTypes.Match | null>(null);
     const [matchIdToDeny, setMatchIdToDeny] = useState<string | null>(null);
+
     const matchTypeCounts = countMatchQualities(matches);
+    const allUsersSelected = selectedUserIds.length > 0 && selectedUserIds.length === matches.length;
     const handleOpenCreateMatchModal = (match: MatchTypes.Match) => {
         setCreateMatchTarget(match);
         getProviders({
@@ -54,6 +59,15 @@ export const Matches = () => {
         setCreateMatchTarget(null);
     };
 
+    const handleCheck = (userId: string) => {
+        const isChecked = selectedUserIds.includes(userId);
+        isChecked
+            ? setSelectedUserIds(selectedUserIds.filter((id) => id !== userId))
+            : setSelectedUserIds([...selectedUserIds, userId]);
+    };
+    const handleCheckAll = () => {
+        allUsersSelected ? setSelectedUserIds([]) : setSelectedUserIds(matches.map((m) => m.user.id));
+    };
     const selectConfigs: SelectConfig[] = [
         {
             options: [
@@ -71,6 +85,7 @@ export const Matches = () => {
     useEffect(() => {
         getMatches();
     }, []);
+
     return (
         <>
             <NavDrawerPage drawer={Navigation} style={{ flexFlow: 'column', display: 'flex', height: '100vh' }}>
@@ -98,12 +113,17 @@ export const Matches = () => {
                         />
                         <SelectGroup configs={selectConfigs} />
                     </Box>
+                    <Box marginTop={1} display="flex" alignItems="center">
+                        <Checkbox onClick={handleCheckAll} checked={allUsersSelected} />
+                        <TextSmall style={{ marginLeft: theme.spacing(1), marginBottom: 0 }}>
+                            {selectedUserIds.length === matches.length ? 'Deselect all' : 'Select all'}
+                        </TextSmall>
+                    </Box>
                     <Divider margin={`${theme.spacing(2)}px 0 0`} />
                 </Box>
                 <MatchesList
-                    onCheck={() => {
-                        console.log('checked...');
-                    }}
+                    selectedItemsIds={selectedUserIds}
+                    onCheck={handleCheck}
                     handleApprove={approveMatchesForUser}
                     handleDeleteMatch={(id) => setMatchIdToDeny(id)}
                     handleCreateMatch={handleOpenCreateMatchModal}

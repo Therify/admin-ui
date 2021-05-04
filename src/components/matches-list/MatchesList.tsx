@@ -6,16 +6,18 @@ import { Text, MatchesCard, ButtonFill as Button } from '../ui';
 import { getProviderToUserCompatability } from '../../utils/MatchQuality';
 
 export type MatchesListProps = {
+    selectedItemsIds: string[];
     handleApprove: (userId: string) => Promise<void>;
     handleDeleteMatch: (id: string) => void;
     handleCreateMatch: (match: MatchTypes.Match) => void;
     handleRetry?: () => void;
-    onCheck: () => void;
+    onCheck: (id: string) => void;
     matches: MatchTypes.Match[];
     isLoading?: boolean;
     errorMessage?: string;
 };
 export const MatchesList = ({
+    selectedItemsIds,
     handleApprove,
     handleDeleteMatch,
     handleCreateMatch,
@@ -26,6 +28,7 @@ export const MatchesList = ({
     errorMessage,
 }: MatchesListProps) => {
     const theme = useTheme();
+
     const matchesWithStatuses = matches.map((match) => ({
         ...match,
         matches: match.matches.map((ranking) => {
@@ -70,8 +73,8 @@ export const MatchesList = ({
             matchesWithStatuses.map((match) => (
                 <MatchesCard
                     key={match.user.id}
-                    isChecked={false}
-                    onCheck={onCheck}
+                    isChecked={selectedItemsIds.includes(match.user.id)}
+                    onCheck={() => onCheck(match.user.id)}
                     user={match.user}
                     rankings={match.matches}
                     handleApprove={() => handleApprove(match.user.id)}
