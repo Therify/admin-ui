@@ -11,6 +11,10 @@ export const SplitButton: Story = () => {
     return <SplitButtonUi options={options} onClick={(option) => console.log(option.value)} />;
 };
 
+export const SplitButtonDisabled: Story = () => {
+    return <SplitButtonUi isDisabled={true} options={options} onClick={(option) => console.log(option.value)} />;
+};
+
 export default {
     title: 'Ui/SplitButton',
 } as Meta;

@@ -10,12 +10,12 @@ export const mockOptions: SplitButtonOption[] = [
 describe('SplitButton', () => {
     afterEach(() => cleanup());
     it('renders successfully', () => {
-        const { getByTestId } = render(<SplitButton options={mockOptions} onClick={() => {}} />);
+        const { getByTestId } = render(<SplitButton options={mockOptions} onClick={jest.fn()} />);
         expect(getByTestId('splitbutton')).toBeDefined();
     });
 
     it('shows options when clicked', () => {
-        const { getByTestId } = render(<SplitButton options={mockOptions} onClick={() => {}} />);
+        const { getByTestId } = render(<SplitButton options={mockOptions} onClick={jest.fn()} />);
         const optionsBtn = getByTestId('splitbutton-options-btn');
         userEvent.click(optionsBtn);
         const list = getByTestId('splitbutton-options');
@@ -33,8 +33,16 @@ describe('SplitButton', () => {
         expect(onClick).toBeCalled();
     });
 
+    it('does not call `onClick` when main button is disabled and clicked', () => {
+        const onClick = jest.fn();
+        const { getByTestId } = render(<SplitButton isDisabled={true} options={mockOptions} onClick={onClick} />);
+        const mainBtn = getByTestId('splitbutton-btn');
+        userEvent.click(mainBtn);
+        expect(onClick).not.toBeCalled();
+    });
+
     it('should change options when list item selected', () => {
-        const { getByTestId } = render(<SplitButton options={mockOptions} onClick={() => {}} />);
+        const { getByTestId } = render(<SplitButton options={mockOptions} onClick={jest.fn()} />);
         const mainBtn = getByTestId('splitbutton-btn');
         const optionsBtn = getByTestId('splitbutton-options-btn');
         userEvent.click(optionsBtn);
