@@ -18,12 +18,13 @@ export type SplitButtonOption = {
 export type SplitButtonProps = {
     onClick: (option: SplitButtonOption) => void;
     options: SplitButtonOption[];
+    isDisabled?: boolean;
 };
-export const SplitButton = ({ options, onClick }: SplitButtonProps) => {
+export const SplitButton = ({ options, onClick, isDisabled }: SplitButtonProps) => {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
-    const [selectedIndex, setSelectedIndex] = React.useState(1);
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
     const successButtonStyles = {
         background: theme.palette.success.main,
         color: theme.palette.success.contrastText,
@@ -48,7 +49,16 @@ export const SplitButton = ({ options, onClick }: SplitButtonProps) => {
 
     return (
         <>
-            <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button" data-testid="splitbutton">
+            <ButtonGroup
+                variant="contained"
+                ref={anchorRef}
+                aria-label="split button"
+                disabled={isDisabled}
+                data-testid="splitbutton"
+                style={{
+                    ...(isDisabled ? { opacity: 0.5 } : {}),
+                }}
+            >
                 <Button
                     onClick={() => onClick(options[selectedIndex])}
                     style={successButtonStyles}
@@ -84,7 +94,7 @@ export const SplitButton = ({ options, onClick }: SplitButtonProps) => {
                             transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
                         }}
                     >
-                        <Paper>
+                        <Paper elevation={10}>
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MenuList id="split-button-menu">
                                     {options.map((option, index) => (
