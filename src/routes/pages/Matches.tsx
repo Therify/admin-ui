@@ -14,6 +14,7 @@ import {
     ButtonFill,
     Checkbox,
     TextSmall,
+    SplitButtonOption,
 } from '../../components/ui';
 import { MatchTypes } from '../../types';
 import { useTheme, Box, CircularProgress } from '@material-ui/core';
@@ -29,9 +30,16 @@ import { countMatchQualities } from '../../utils/MatchQuality';
 
 export const Matches = () => {
     const theme = useTheme();
+    const matchesBulkActionsConfig: SplitButtonOption[] = [{ value: 'APPROVE_SELECTED', text: 'Approve Selected' }];
+    const [showBulkApproveModal, setShowBulkApproveModal] = useState(false);
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
     const { isLoadingProviders, getProviders, getProvidersError, providers } = useMatchesApi();
-    const { approveMatchesForUser } = useApproveMatch({ withAlerts: true });
+    const {
+        approveMatchesForUser,
+        bulkApproveMatchesByUserIds,
+        isApprovingMatch,
+        approveMatchError,
+    } = useApproveMatch({ withAlerts: true });
     const { isCreatingRanking, createRanking, createRankingError } = useCreateRanking({ withAlerts: true });
     const { matches, getMatches, getMatchesError, isLoadingMatches } = useGetMatches({ withAlerts: true });
     const { denyMatch, isDenyingMatch, denyMatchError } = useDenyMatch({
@@ -101,7 +109,11 @@ export const Matches = () => {
                                 }}
                                 style={{ marginRight: theme.spacing(1) }}
                             />
-                            <SplitButton options={[]} onClick={(option: any) => console.log(option?.text)} />
+                            <SplitButton
+                                options={matchesBulkActionsConfig}
+                                isDisabled={selectedUserIds.length === 0}
+                                onClick={() => setShowBulkApproveModal(true)}
+                            />
                         </Box>
                     </Box>
 
@@ -177,6 +189,45 @@ export const Matches = () => {
                                 style={{ marginLeft: theme.spacing(1) }}
                             >
                                 {denyMatchError ? 'Try again' : 'Deny'}
+                            </ButtonFill>
+                        </>
+                    )}
+                </Modal>
+            )}
+            {showBulkApproveModal && (
+                <Modal
+                    isOpen={!!showBulkApproveModal}
+                    title={isApprovingMatch ? '' : 'Bulk Approve Matches'}
+                    handleClose={() => setShowBulkApproveModal(false)}
+                >
+                    {isApprovingMatch ? (
+                        <Box
+                            display="flex"
+                            padding={theme.spacing(0, 4)}
+                            justifyContent="center"
+                            flexDirection="column"
+                            alignItems="center"
+                        >
+                            <Text>approving matches...</Text>
+                            <CircularProgress color="primary" />
+                        </Box>
+                    ) : (
+                        <>
+                            {approveMatchError ? (
+                                <Text color="error">There was a problem: {approveMatchError}</Text>
+                            ) : (
+                                <Text>Are you sure you want to bulk approve matches?</Text>
+                            )}
+                            <ButtonOutline onClick={() => setShowBulkApproveModal(false)}>cancel</ButtonOutline>
+                            <ButtonFill
+                                onClick={() => {
+                                    bulkApproveMatchesByUserIds(selectedUserIds).then(() =>
+                                        setShowBulkApproveModal(false),
+                                    );
+                                }}
+                                style={{ marginLeft: theme.spacing(1) }}
+                            >
+                                {approveMatchError ? 'Try again' : 'Approve'}
                             </ButtonFill>
                         </>
                     )}

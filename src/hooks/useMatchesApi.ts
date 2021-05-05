@@ -74,8 +74,44 @@ export const useApproveMatch = (config?: MatchesApiConfig) => {
         }
         setIsApprovingMatch(false);
     };
+
+    const bulkApproveMatchesByUserIds = async (userIds: string[]) => {
+        setIsApprovingMatch(true);
+        setApproveMatchError(undefined);
+        const misssingUsers: string[] = [];
+        const matchIds = userIds.reduce<string[]>((acc, userId) => {
+            const userMatch = matchesState[userId];
+            if (!userMatch) {
+                misssingUsers.push(userId);
+            } else {
+                acc = [...acc, ...removeDeniedRankingsFromMatch(userMatch, deniedRankingIds).matches.map((m) => m.id)];
+            }
+            return acc;
+        }, []);
+
+        if (misssingUsers.length > 0) {
+            createErrorAlert(`Could not find ${misssingUsers.length}/${userIds.length} find users`);
+            if (misssingUsers.length === userIds.length) return;
+        }
+
+        try {
+            await MatchesApi.approveMatches(matchIds);
+            userIds.forEach((userId) => {
+                if (!misssingUsers.includes(userId)) {
+                    dispatch(setUserMatchesApproved(userId));
+                }
+            });
+            if (config?.withAlerts)
+                createSuccessAlert(`Approved ${userIds.length - misssingUsers.length}/${userIds.length}!`);
+        } catch (error) {
+            setApproveMatchError(error.message);
+            if (config?.withAlerts) createErrorAlert(error.message);
+        }
+        setIsApprovingMatch(false);
+    };
     return {
         approveMatchesForUser,
+        bulkApproveMatchesByUserIds,
         isApprovingMatch,
         approveMatchError,
     };
