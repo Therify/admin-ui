@@ -1,6 +1,8 @@
+import { CompanyIds } from '../company';
 import { User } from '../match';
 
 export const mockUser: User = {
+    companyId: CompanyIds.Therify,
     id: 'user123',
     emailAddress: 'patient@therifydev.com',
     stateOfResidence: 'Tennessee',

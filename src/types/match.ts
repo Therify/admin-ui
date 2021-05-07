@@ -1,3 +1,4 @@
+import { CompanyIds } from './company';
 export type Match = {
     user: User;
     matches: Ranking[];
@@ -5,6 +6,7 @@ export type Match = {
 
 export type User = {
     id: string;
+    companyId: CompanyIds;
     emailAddress: string;
     stateOfResidence: string;
     gender: string;
