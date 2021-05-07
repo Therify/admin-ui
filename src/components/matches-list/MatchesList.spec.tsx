@@ -24,6 +24,23 @@ describe('MatchesList', () => {
         expect(getByText('All caught up. No matches to show!')).toBeInTheDocument();
     });
 
+    it('should render custom message when no matches and custom message provided', () => {
+        const noMatchesMessage = 'No matches in this test';
+        const { getByText } = renderWithStore(
+            <MatchesList
+                selectedItemsIds={[]}
+                matches={[]}
+                isLoading={false}
+                onCheck={mockOnCheck}
+                handleApprove={mockHandleApprove}
+                handleDeleteMatch={mockHandleDeleteMatch}
+                handleCreateMatch={mockHandleCreateMatch}
+                noMatchesMessage={noMatchesMessage}
+            />,
+        );
+        expect(getByText(noMatchesMessage)).toBeInTheDocument();
+    });
+
     it('should render matches provided', () => {
         const { getByText } = renderWithStore(
             <MatchesList
