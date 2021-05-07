@@ -15,6 +15,7 @@ export type MatchesListProps = {
     matches: MatchTypes.Match[];
     isLoading?: boolean;
     errorMessage?: string;
+    noMatchesMessage?: string;
 };
 export const MatchesList = ({
     selectedItemsIds,
@@ -26,6 +27,7 @@ export const MatchesList = ({
     isLoading,
     matches,
     errorMessage,
+    noMatchesMessage = 'All caught up. No matches to show!',
 }: MatchesListProps) => {
     const theme = useTheme();
 
@@ -58,7 +60,7 @@ export const MatchesList = ({
     const MatchesContent =
         matches.length === 0 ? (
             <Box display="flex" alignItems="center">
-                <Text>All caught up. No matches to show!</Text>
+                <Text>{noMatchesMessage}</Text>
                 <RefreshWrapper
                     onClick={handleRetry}
                     style={{

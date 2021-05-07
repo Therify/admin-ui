@@ -28,6 +28,7 @@ import {
 import { MatchesList, CreateMatchModal, Navigation } from '../../components';
 import { countMatchQualities } from '../../utils/MatchQuality';
 import { CompanyIds, CompanyNames } from '../../types/company';
+import { getCompayNameById } from '../../utils/idMappings';
 
 export const Matches = () => {
     const theme = useTheme();
@@ -39,12 +40,13 @@ export const Matches = () => {
         withAlerts: true,
     });
     const { isCreatingRanking, createRanking, createRankingError } = useCreateRanking({ withAlerts: true });
-    const { matches, getMatches, getMatchesError, isLoadingMatches } = useGetMatches({ withAlerts: true });
+    const { matches: allMatches, getMatches, getMatchesError, isLoadingMatches } = useGetMatches({ withAlerts: true });
     const { denyMatch, isDenyingMatch, denyMatchError } = useDenyMatch({
         withAlerts: true,
     });
 
     const [companyFilter, setCompanyFilter] = useState('all');
+    const [matches, setMatches] = useState(allMatches);
     const [createMatchTarget, setCreateMatchTarget] = useState<MatchTypes.Match | null>(null);
     const [matchIdToDeny, setMatchIdToDeny] = useState<string | null>(null);
 
@@ -79,6 +81,7 @@ export const Matches = () => {
             options: [
                 { value: 'all', text: 'all' },
                 { value: CompanyIds.CriticalMass, text: CompanyNames.CriticalMass },
+                { value: CompanyIds.Therify, text: CompanyNames.Therify },
                 { value: CompanyIds.Thumbtack, text: CompanyNames.Thumbtack },
             ],
             id: 'company-select',
@@ -91,6 +94,15 @@ export const Matches = () => {
     useEffect(() => {
         getMatches();
     }, []);
+
+    useEffect(() => {
+        if (companyFilter === 'all') {
+            setMatches(allMatches);
+        } else {
+            setMatches(allMatches.filter((m) => m.user.companyId === companyFilter));
+        }
+        setSelectedUserIds([]);
+    }, [allMatches, companyFilter]);
 
     return (
         <>
@@ -126,7 +138,9 @@ export const Matches = () => {
                     <Box marginTop={1} display="flex" alignItems="center">
                         <Checkbox onClick={handleCheckAll} checked={allUsersSelected} />
                         <TextSmall style={{ marginLeft: theme.spacing(1), marginBottom: 0 }}>
-                            {selectedUserIds.length === matches.length ? 'Deselect all' : 'Select all'}
+                            {selectedUserIds.length > 0 && selectedUserIds.length === matches.length
+                                ? 'Deselect all'
+                                : 'Select all'}
                         </TextSmall>
                     </Box>
                     <Divider margin={`${theme.spacing(2)}px 0 0`} />
@@ -141,6 +155,9 @@ export const Matches = () => {
                     errorMessage={getMatchesError}
                     handleRetry={getMatches}
                     matches={matches}
+                    noMatchesMessage={
+                        companyFilter === 'all' ? undefined : `No matches for ${getCompayNameById(companyFilter)}`
+                    }
                 />
             </NavDrawerPage>
             {createMatchTarget && (

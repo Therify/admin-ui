@@ -1,6 +1,6 @@
 import { CompanyIds, CompanyNames } from '../types/company';
 
-export const getCompayNameById = (id: CompanyIds): CompanyNames | 'unknown' => {
+export const getCompayNameById = (id: string): CompanyNames | 'unknown' => {
     switch (id) {
         case CompanyIds.CriticalMass:
             return CompanyNames.CriticalMass;
