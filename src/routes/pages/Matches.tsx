@@ -27,6 +27,7 @@ import {
 } from '../../hooks/useMatchesApi';
 import { MatchesList, CreateMatchModal, Navigation } from '../../components';
 import { countMatchQualities } from '../../utils/MatchQuality';
+import { CompanyIds, CompanyNames } from '../../types/company';
 
 export const Matches = () => {
     const theme = useTheme();
@@ -77,8 +78,8 @@ export const Matches = () => {
         {
             options: [
                 { value: 'all', text: 'all' },
-                { value: 'CriticalMass', text: 'Critical Mass' },
-                { value: 'Thumbtack', text: 'Thumbtack' },
+                { value: CompanyIds.CriticalMass, text: CompanyNames.CriticalMass },
+                { value: CompanyIds.Thumbtack, text: CompanyNames.Thumbtack },
             ],
             id: 'company-select',
             name: 'Company',
