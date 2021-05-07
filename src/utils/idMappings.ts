@@ -1,6 +1,6 @@
 import { CompanyIds, CompanyNames } from '../types/company';
 
-export const getCompayNameById = (id: string): CompanyNames | 'unknown' => {
+export const getCompayNameById = (id: string): CompanyNames | 'unknown company' => {
     switch (id) {
         case CompanyIds.CriticalMass:
             return CompanyNames.CriticalMass;
@@ -9,6 +9,6 @@ export const getCompayNameById = (id: string): CompanyNames | 'unknown' => {
         case CompanyIds.Thumbtack:
             return CompanyNames.Thumbtack;
         default:
-            return 'unknown';
+            return 'unknown company';
     }
 };
