@@ -39,6 +39,7 @@ export const SearchBar = ({ label, value, onChange, onClear, placeholder, style 
                             paddingRight: theme.spacing(1),
                             transition: '200ms',
                             opacity: Number(!!value),
+                            cursor: 'pointer',
                         }}
                     >
                         <Close style={centeredIconStyle} />

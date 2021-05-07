@@ -46,6 +46,7 @@ export const Matches = () => {
     });
 
     const [companyFilter, setCompanyFilter] = useState('all');
+    const [searchTerm, setSearchTerm] = useState('');
     const [matches, setMatches] = useState(allMatches);
     const [createMatchTarget, setCreateMatchTarget] = useState<MatchTypes.Match | null>(null);
     const [matchIdToDeny, setMatchIdToDeny] = useState<string | null>(null);
@@ -91,18 +92,30 @@ export const Matches = () => {
             onChange: (val: string) => setCompanyFilter(val),
         },
     ];
+    const getNoMatchesMessage = () => {
+        let message;
+        if (companyFilter !== 'all' && searchTerm !== '') {
+            message = `${searchTerm} in ${getCompayNameById(companyFilter)}`;
+        } else {
+            message = companyFilter !== 'all' ? getCompayNameById(companyFilter) : searchTerm;
+        }
+        return message ? `No matches for ${message}` : undefined;
+    };
     useEffect(() => {
         getMatches();
     }, []);
 
     useEffect(() => {
-        if (companyFilter === 'all') {
-            setMatches(allMatches);
-        } else {
-            setMatches(allMatches.filter((m) => m.user.companyId === companyFilter));
+        let matches = allMatches;
+        if (companyFilter !== 'all') {
+            matches = matches.filter((m) => m.user.companyId === companyFilter);
         }
+        if (searchTerm !== '') {
+            matches = matches.filter((m) => m.user.emailAddress.toLowerCase().includes(searchTerm.toLowerCase()));
+        }
+        setMatches(matches);
         setSelectedUserIds([]);
-    }, [allMatches, companyFilter]);
+    }, [allMatches, companyFilter, searchTerm]);
 
     return (
         <>
@@ -113,10 +126,9 @@ export const Matches = () => {
                         <Box>
                             <SearchBar
                                 label="Search for matches"
-                                value={''}
-                                onChange={(val: string) => {
-                                    console.log(val);
-                                }}
+                                value={searchTerm}
+                                onChange={(val: string) => setSearchTerm(val.trim())}
+                                onClear={() => setSearchTerm('')}
                                 style={{ marginRight: theme.spacing(1) }}
                             />
                             <SplitButton
@@ -155,9 +167,7 @@ export const Matches = () => {
                     errorMessage={getMatchesError}
                     handleRetry={getMatches}
                     matches={matches}
-                    noMatchesMessage={
-                        companyFilter === 'all' ? undefined : `No matches for ${getCompayNameById(companyFilter)}`
-                    }
+                    noMatchesMessage={getNoMatchesMessage()}
                 />
             </NavDrawerPage>
             {createMatchTarget && (
