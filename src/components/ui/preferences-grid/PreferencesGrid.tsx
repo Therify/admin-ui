@@ -33,7 +33,7 @@ export const PreferencesGrid = ({
             </Grid>
             <Grid item xs={12} sm={4}>
                 <TextSmall style={{ flexGrow: 3 }}>
-                    <b>specialties: </b>
+                    <b>Specialties: </b>
                     {issues}
                 </TextSmall>
             </Grid>
