@@ -1,4 +1,4 @@
-import { MatchTypes, Mocks } from '../types';
+import { MatchTypes } from '../types';
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import { adaptApiMatches } from './utils';
 
@@ -39,13 +39,11 @@ const MatchesApiCreator = (baseUrl: string) => {
     };
 
     const createMatch = async ({ userId, providerId }: createMatchOptions) => {
-        const { data: axiosData } = await makeRequest(`${baseUrl}/matches/approve`, {
+        const { data: axiosData } = await makeRequest(`${baseUrl}/matches`, {
             method: 'POST',
             data: { userId, providerId },
-            shouldFakeRequest: true,
         });
-        console.log(axiosData?.data);
-        return Mocks.mockRanking;
+        return adaptApiMatches(axiosData?.data);
     };
     const approveMatches = async (matchIds: string[]) => {
         const { data: axiosData } = await makeRequest(`${baseUrl}/matches/approve`, {
@@ -62,7 +60,6 @@ const MatchesApiCreator = (baseUrl: string) => {
                 reason,
             },
         });
-        console.log({ denyMatchResponse: axiosData });
         return axiosData.data;
     };
     const getProviders = async (queryString?: string) => {

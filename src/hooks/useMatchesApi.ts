@@ -153,13 +153,14 @@ export const useCreateRanking = (config?: MatchesApiConfig) => {
         setIsCreatingRanking(true);
         setCreateRankingError(undefined);
         try {
-            const newRanking = await MatchesApi.createMatch({ userId, providerId });
-            const match = matches[userId];
+            const [newRanking] = await MatchesApi.createMatch({ userId, providerId });
+            const match = matches[newRanking.user.id];
             if (match) {
+                const matches = [...match.matches, ...newRanking.matches];
                 dispatch(
                     setMatch({
                         ...match,
-                        matches: [...match.matches, newRanking],
+                        matches,
                     }),
                 );
                 if (config?.withAlerts) createSuccessAlert('Successfully created match!');
