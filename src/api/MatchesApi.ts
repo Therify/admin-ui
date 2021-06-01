@@ -35,7 +35,7 @@ const MatchesApiCreator = (baseUrl: string) => {
 
     const getMatches = async (): Promise<MatchTypes.Match[]> => {
         const { data: axiosData } = await makeRequest(`${baseUrl}/matches`);
-        return adaptApiMatches(axiosData?.data?.Items ?? []);
+        return adaptApiMatches(axiosData?.data ?? []);
     };
 
     const createMatch = async ({ userId, providerId }: createMatchOptions) => {
