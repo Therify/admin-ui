@@ -94,7 +94,6 @@ const navLinkList: NavLinkConfig[] = [
         path: '/providers',
         displayText: 'Providers',
         Icon: HowToReg,
-        title: 'Coming soon!',
-        isDisabled: true,
+        title: 'Manage provider data',
     },
 ];
