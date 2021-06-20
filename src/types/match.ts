@@ -1,4 +1,5 @@
 import { CompanyIds } from './company';
+import { Gender, YearsOfExperience } from './types';
 export type Match = {
     user: User;
     matches: Ranking[];
@@ -27,8 +28,8 @@ export type Provider = {
     lastName: string;
     licensedStates: string[];
     acceptedInsurance: string[];
-    yearsOfExperience: number;
-    gender: string;
+    yearsOfExperience: YearsOfExperience;
+    gender: Gender;
     race: string[];
     specialties: string[];
     theraputicPractices: string[];
