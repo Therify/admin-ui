@@ -1,5 +1,6 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import { MatchTypes } from '../types';
+import { sortByNameOfPractice } from './utils/providerHelpers';
 
 const makeFakeRequest = ({ url, config }: any) =>
     new Promise<any>((resolve) => {
@@ -25,7 +26,7 @@ const providersApiCreator = (baseUrl: string) => {
     };
     const getProviders = async (queryString?: string) => {
         const { data: axiosData } = await makeRequest(`${baseUrl}/providers${queryString}`);
-        return axiosData.data as MatchTypes.Provider[];
+        return sortByNameOfPractice(axiosData.data as MatchTypes.Provider[]);
     };
     const getProviderById = async (id: string) => {
         const { data: axiosData } = await makeRequest(`${baseUrl}/providers/${id}`);
@@ -43,6 +44,9 @@ const providersApiCreator = (baseUrl: string) => {
         if (!provider.id) throw new Error('Id missing in provider data!');
         const { data: axiosData } = await makeRequest(`${baseUrl}/providers/${provider.id}`, {
             method: 'PUT',
+            headers: {
+                'content-type': 'application/json',
+            },
             data: { ...provider },
         });
         return axiosData.data as MatchTypes.Provider;
