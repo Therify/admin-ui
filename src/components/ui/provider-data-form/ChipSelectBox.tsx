@@ -42,7 +42,7 @@ export const ChipSelectBox = ({ chips, onListChange, autoSelectList, placeholder
             )}
             {chips.map((chip) => (
                 <Chip key={chip}>
-                    <TextSmall>{chip}</TextSmall>
+                    <TextSmall style={{ margin: 0 }}>{chip}</TextSmall>
                     <IconButton
                         component="span"
                         aria-label="Remove item"

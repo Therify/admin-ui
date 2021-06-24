@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Box, withStyles, useTheme, Button } from '@material-ui/core';
+import { Box, withStyles, useTheme, Button, CircularProgress } from '@material-ui/core';
 import { TextField } from 'formik-material-ui';
 import { Select, SelectOption, TextSmall, Divider, Text, Header1 } from '../core/';
 
@@ -10,22 +10,19 @@ import {
     RACE_OPTIONS,
     ISSUE_OPTIONS,
     THERAPEUTIC_PRACTICES,
-    YEARS_OF_EXPERIENCE_OPTIONS,
     INSURANCE_OPTIONS,
     MatchTypes,
     Gender,
-    YearsOfExperience,
 } from '../../../types/';
 import { ChipSelectBox } from './ChipSelectBox';
 
 interface ProviderDataFormProps {
     provider: MatchTypes.Provider;
     isSubmitting: boolean;
-    onSubmit: (provider: MatchTypes.Provider) => Promise<void>;
+    onSubmit: (provider: Partial<MatchTypes.Provider>) => Promise<void>;
 }
 const getOptions = (values: string[]) => values.map((value) => ({ value, text: value }));
 const genderOptions: SelectOption[] = getOptions([...GENDER_OPTIONS]);
-const yearsOfExperienceOptions: SelectOption[] = getOptions([...YEARS_OF_EXPERIENCE_OPTIONS]);
 
 export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderDataFormProps) => {
     const { spacing, palette, shape } = useTheme();
@@ -38,12 +35,13 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
     const [rate, setRate] = useState(provider.rate);
     const [yearsOfExperience, setYearsOfExperience] = useState(provider.yearsOfExperience);
     const [license, setLicense] = useState(provider.license);
-
     const [licensedStates, setLicensedStates] = useState(provider.licensedStates);
     const [acceptedInsurance, setAcceptedInsurance] = useState(provider.acceptedInsurance);
     const [race, setRace] = useState(provider.race);
     const [specialties, setSpecialties] = useState(provider.specialties);
-    const [theraputicPractices, setTheraputicPractices] = useState(provider.theraputicPractices);
+    const [therapeuticPractices, setTherapeuticPractices] = useState(provider.therapeuticPractices);
+
+    console.log({ provider });
     const validateWebsiteUrl = () => {
         let url;
         if (!websiteUrl) return undefined;
@@ -65,33 +63,29 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
     return (
         <Formik
             initialValues={provider}
-            onSubmit={async () => {
-                try {
-                    await onSubmit({
-                        ...provider,
-                        emailAddress,
-                        firstName,
-                        lastName,
-                        websiteUrl,
-                        nameOfPractice,
-                        gender,
-                        rate,
-                        yearsOfExperience,
-                        license,
-                        licensedStates,
-                        acceptedInsurance,
-                        race,
-                        specialties,
-                        theraputicPractices,
-                    });
-                } catch (e) {
-                    console.log(e);
-                }
-            }}
+            onSubmit={async () =>
+                onSubmit({
+                    emailAddress,
+                    firstName,
+                    lastName,
+                    websiteUrl,
+                    nameOfPractice,
+                    gender,
+                    rate,
+                    yearsOfExperience,
+                    license,
+                    licensedStates,
+                    acceptedInsurance,
+                    race,
+                    specialties,
+                    therapeuticPractices,
+                })
+            }
         >
             {() => (
                 <Form
                     style={{
+                        position: 'relative',
                         padding: spacing(4, 4, 2),
                         marginBottom: spacing(2),
                         maxWidth: '880px',
@@ -105,7 +99,11 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                         <Text>{provider.nameOfPractice}</Text>
                         <Header1>{`${provider.firstName} ${provider.lastName}`}</Header1>
                     </Box>
-                    <Box style={{ opacity: isSubmitting ? 0.5 : 1, pointerEvents: isSubmitting ? 'none' : undefined }}>
+                    <Box
+                        style={{
+                            pointerEvents: isSubmitting ? 'none' : undefined,
+                        }}
+                    >
                         <FormSection>
                             <>
                                 <Box style={{ display: 'flex', margin: 0 }}>
@@ -180,15 +178,18 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                             onChange={(value) => setGender(value as Gender)}
                                         />
                                     </Box>
-                                    <Box marginRight={2}>
-                                        <TextSmall>Years of Experience</TextSmall>
-                                        <Select
-                                            name="yearsOfExperience"
-                                            options={yearsOfExperienceOptions}
-                                            selectedValue={yearsOfExperience}
-                                            onChange={(value) => setYearsOfExperience(value as YearsOfExperience)}
-                                        />
-                                    </Box>
+                                    <Field
+                                        variant="outlined"
+                                        component={TextField}
+                                        name="yearsOfExperience"
+                                        type="number"
+                                        label="Years Of Experience"
+                                        value={yearsOfExperience}
+                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
+                                            setYearsOfExperience(parseInt(ev.target.value))
+                                        }
+                                        style={{ marginRight: spacing(2) }}
+                                    />
                                     <Field
                                         variant="outlined"
                                         component={TextField}
@@ -256,9 +257,9 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                             <Text>Theraputic Practices</Text>
                             <ChipSelectBox
                                 placeholder="Select practice"
-                                chips={theraputicPractices.sort()}
+                                chips={therapeuticPractices.sort()}
                                 autoSelectList={[...THERAPEUTIC_PRACTICES]}
-                                onListChange={(practices: string[]) => setTheraputicPractices(practices)}
+                                onListChange={(practices: string[]) => setTherapeuticPractices(practices)}
                             />
                         </Box>
                         <Box display="flex" justifyContent="flex-end">
@@ -272,11 +273,29 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                             </Button>
                         </Box>
                     </Box>
+                    {isSubmitting && <Loader />}
                 </Form>
             )}
         </Formik>
     );
 };
+
+const Loader = () => (
+    <Box
+        height="100%"
+        width="100%"
+        position="absolute"
+        zIndex={1000}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        top="0"
+        left="0"
+        style={{ background: 'rgba(255,255,255,.7)' }}
+    >
+        <CircularProgress color="primary" />
+    </Box>
+);
 
 const FormSection = withStyles(({ spacing }) => ({
     root: {
