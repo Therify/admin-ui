@@ -13,8 +13,8 @@ export const mockProvider: Provider = {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     rate: 10,
-    yearsOfExperience: '5 to 9',
-    theraputicPractices: [],
+    yearsOfExperience: 5,
+    therapeuticPractices: [],
 };
 export const mockProvider2: Provider = {
     id: 'xx3',
@@ -30,8 +30,8 @@ export const mockProvider2: Provider = {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     rate: 10,
-    yearsOfExperience: '5 to 9',
-    theraputicPractices: [],
+    yearsOfExperience: 5,
+    therapeuticPractices: [],
 };
 
 export const mockProvider3: Provider = {
@@ -48,7 +48,7 @@ export const mockProvider3: Provider = {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     rate: 10,
-    yearsOfExperience: '5 to 9',
-    theraputicPractices: [],
+    yearsOfExperience: 5,
+    therapeuticPractices: [],
 };
 export const mockProviders: Provider[] = [mockProvider, mockProvider2, mockProvider3];

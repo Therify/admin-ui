@@ -1,4 +1,5 @@
 import { MatchApiTypes } from '../../types';
+import { CompanyIds } from '../../types/company';
 import { adaptApiMatches } from './matchesHelpers';
 const mockApiResults: MatchApiTypes.GetMatchesResponse[] = [
     {
@@ -68,6 +69,7 @@ const mockApiResults: MatchApiTypes.GetMatchesResponse[] = [
         ttl: 39,
         SK: 'USER#2727a488-b5d8-4d1e-9b49-393d0a7d42d4',
         details: {
+            companyId: CompanyIds.Therify,
             languagePreference: 'English',
             createdAt: '2021-04-24T19:47:37.095Z',
             emailAddress: 'warrendsadler@gmail.com',

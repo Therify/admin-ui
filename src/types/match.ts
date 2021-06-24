@@ -28,11 +28,11 @@ export type Provider = {
     lastName: string;
     licensedStates: string[];
     acceptedInsurance: string[];
-    yearsOfExperience: YearsOfExperience;
+    yearsOfExperience: number;
     gender: Gender;
     race: string[];
     specialties: string[];
-    theraputicPractices: string[];
+    therapeuticPractices: string[];
     createdAt: string;
     updatedAt: string;
     rate: number;
