@@ -9,6 +9,9 @@ export const Providers = () => {
     const theme = useTheme();
     const [searchTerm, setSearchTerm] = useState('');
     const { getProviders, providers, isLoadingProviders, getProvidersError } = useProvidersApi({ withAlerts: true });
+    const filteredProviders = providers.filter((provider) =>
+        `${provider.firstName} ${provider.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
     useEffect(() => {
         getProviders();
     }, []);
@@ -29,6 +32,11 @@ export const Providers = () => {
             <CircularProgress color="primary" />
         </Box>
     ) : undefined;
+
+    const EmptyFilterContent =
+        filteredProviders.length === 0 && !!searchTerm ? (
+            <Text style={{ margin: theme.spacing(2, 0) }}>No providers match your filter.</Text>
+        ) : undefined;
     return (
         <NavDrawerPage drawer={Navigation}>
             <Box style={{ padding: theme.spacing(3, 6, 0, 6) }}>
@@ -49,7 +57,7 @@ export const Providers = () => {
                     {/* <SelectGroup configs={selectConfigs} /> */}
                 </Box>
                 <Divider margin={`${theme.spacing(2)}px 0 0`} />
-                {ErrorContent ?? LoadingContent ?? (
+                {ErrorContent ?? LoadingContent ?? EmptyFilterContent ?? (
                     <List
                         component="nav"
                         aria-labelledby="site-navigation"
@@ -59,7 +67,7 @@ export const Providers = () => {
                             marginTop: theme.spacing(4),
                         }}
                     >
-                        {providers.map((provider) => (
+                        {filteredProviders.map((provider) => (
                             <ListItem key={provider.id} button style={{ padding: 0 }}>
                                 <Link
                                     to={`/providers/${provider.id}`}
