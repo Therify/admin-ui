@@ -66,7 +66,6 @@ export const useCreateProvider = (config?: MatchesApiConfig) => {
         setIsCreatingProvider(true);
         try {
             const results = await ProvidersApi.createProvider(provider);
-            console.log({ createResults: results });
             setCreatedProvider(results);
         } catch (error) {
             setCreateProviderError(error.message);
@@ -85,8 +84,7 @@ export const useUpdateProvider = (config?: MatchesApiConfig) => {
         setUpdateProviderError(undefined);
         setIsUpdatingProvider(true);
         try {
-            const results = await ProvidersApi.updateProvider(provider);
-            console.log({ updateResults: results });
+            await ProvidersApi.updateProvider(provider);
             if (config?.withAlerts) createSuccessAlert('Successfully updated provider data!');
         } catch (error) {
             setUpdateProviderError(error.message);
@@ -105,8 +103,7 @@ export const useDeleteProvider = (config?: MatchesApiConfig) => {
         setDeleteProviderError(undefined);
         setIsDeletingProvider(true);
         try {
-            const results = await ProvidersApi.getProviderById(id);
-            console.log({ deleteResults: results });
+            await ProvidersApi.getProviderById(id);
         } catch (error) {
             setDeleteProviderError(error.message);
             if (config?.withAlerts) createErrorAlert(error.message);

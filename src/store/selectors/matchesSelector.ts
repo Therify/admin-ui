@@ -18,7 +18,6 @@ export const getEligibleMatches = (store: Store): MatchTypes.Match[] => {
 export const getApprovedUserMatches = (store: Store): MatchTypes.Match[] => {
     const matches = getAllMatches(store);
     const approvedUserIds = getApprovedUserIds(store);
-    console.log({ approvedUserIds });
     return matches.filter((match) => approvedUserIds.has(match.user.id));
 };
 
