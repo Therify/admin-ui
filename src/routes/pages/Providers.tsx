@@ -2,19 +2,59 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, List, ListItemIcon, ListItem, useTheme, Button, CircularProgress } from '@material-ui/core';
 import { Person } from '@material-ui/icons';
-import { Header1, TextSmall, NavDrawerPage, Divider, Navigation, SearchBar, SelectGroup, Text } from '../../components';
+import {
+    Header1,
+    TextSmall,
+    NavDrawerPage,
+    Divider,
+    Navigation,
+    SearchBar,
+    SelectGroup,
+    Text,
+    SelectConfig,
+} from '../../components';
 import { useProvidersApi } from '../../hooks/useProvidersApi';
+import { MatchTypes } from '../../types';
 
 export const Providers = () => {
     const theme = useTheme();
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedPractice, setSelectedPractice] = useState('all');
     const { getProviders, providers, isLoadingProviders, getProvidersError } = useProvidersApi({ withAlerts: true });
-    const filteredProviders = providers.filter((provider) =>
-        `${provider.firstName} ${provider.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    const [filteredProviders, setFilteredProviders] = useState(providers);
+    const practices = new Set(providers.map(({ nameOfPractice }) => nameOfPractice));
+    const selectConfigs: SelectConfig[] = [
+        {
+            options: [
+                { value: 'all', text: 'All practices' },
+                ...Array.from(practices, (nameOfPractice) => ({
+                    value: nameOfPractice ?? 'Not with a practice',
+                    text: nameOfPractice ?? 'Not with a practice',
+                })),
+            ],
+            id: 'name-of-practice',
+            name: 'Name of Practice Select',
+            selectedValue: selectedPractice,
+            onChange: setSelectedPractice,
+        },
+    ];
     useEffect(() => {
         getProviders();
     }, []);
+    useEffect(() => {
+        const filteredProviders = providers.reduce<MatchTypes.Provider[]>((acc, provider) => {
+            const conditions = [
+                searchTerm === '' ||
+                    `${provider.firstName} ${provider.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()),
+                selectedPractice === 'all' || provider.nameOfPractice === selectedPractice,
+            ];
+            if (conditions.every((status) => status === true)) {
+                acc.push(provider);
+            }
+            return acc;
+        }, []);
+        setFilteredProviders(filteredProviders);
+    }, [selectedPractice, searchTerm]);
     const ErrorContent = getProvidersError ? (
         <Box
             display="flex"
@@ -34,7 +74,7 @@ export const Providers = () => {
     ) : undefined;
 
     const EmptyFilterContent =
-        filteredProviders.length === 0 && !!searchTerm ? (
+        filteredProviders.length === 0 && providers.length > 0 ? (
             <Text style={{ margin: theme.spacing(2, 0) }}>No providers match your filter.</Text>
         ) : undefined;
     return (
@@ -53,8 +93,8 @@ export const Providers = () => {
                     </Box>
                 </Box>
 
-                <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={3}>
-                    {/* <SelectGroup configs={selectConfigs} /> */}
+                <Box display="flex" justifyContent="flex-end" alignItems="center" marginTop={3}>
+                    <SelectGroup configs={selectConfigs} />
                 </Box>
                 <Divider margin={`${theme.spacing(2)}px 0 0`} />
                 {ErrorContent ?? LoadingContent ?? EmptyFilterContent ?? (
