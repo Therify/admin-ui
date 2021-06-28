@@ -1,5 +1,5 @@
 import { CompanyIds } from './company';
-import { Gender, YearsOfExperience } from './types';
+import { Gender } from './types';
 export type Match = {
     user: User;
     matches: Ranking[];
