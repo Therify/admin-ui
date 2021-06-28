@@ -15,6 +15,7 @@ import {
     Gender,
 } from '../../../types/';
 import { ChipSelectBox } from './ChipSelectBox';
+import { validateEmail, validateRequired, validateWebsiteUrl } from './validators';
 
 interface ProviderDataFormProps {
     provider: MatchTypes.Provider;
@@ -41,34 +42,6 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
     const [specialties, setSpecialties] = useState(provider.specialties);
     const [therapeuticPractices, setTherapeuticPractices] = useState(provider.therapeuticPractices);
 
-    const validateRequired = ({ val, fieldName }: { val: string | number; fieldName: string }) => {
-        let isValid = true;
-        if (val === undefined) {
-            isValid = false;
-        }
-        if (typeof val === 'string') {
-            isValid = val !== '';
-        }
-        return isValid ? undefined : `${fieldName} is required`;
-    };
-    const validateWebsiteUrl = () => {
-        let url;
-        if (!websiteUrl) return undefined;
-        try {
-            url = new URL(websiteUrl);
-        } catch (_) {
-            return 'Invalid url';
-        }
-        return url.protocol === 'http:' || url.protocol === 'https:' ? undefined : 'Invalid url';
-    };
-    const validateEmail = () => {
-        console.log({ emailAddress });
-        if (!emailAddress) return 'Email required';
-        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
-            return 'Invalid email address';
-        }
-        return undefined;
-    };
     return (
         <Formik
             initialValues={provider}
@@ -149,7 +122,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                     name="email"
                                     type="email"
                                     label="Email"
-                                    validate={validateEmail}
+                                    validate={() => validateEmail(emailAddress)}
                                     value={emailAddress}
                                     onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                         setEmailAddress(ev.target.value)
@@ -163,7 +136,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                     type="text"
                                     label="Website Url"
                                     value={websiteUrl ?? ''}
-                                    validate={validateWebsiteUrl}
+                                    validate={() => validateWebsiteUrl(websiteUrl ?? '')}
                                     onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                         setWebsiteUrl(ev.target.value)
                                     }
