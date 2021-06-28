@@ -54,7 +54,7 @@ export const Providers = () => {
             return acc;
         }, []);
         setFilteredProviders(filteredProviders);
-    }, [selectedPractice, searchTerm]);
+    }, [selectedPractice, searchTerm, providers]);
     const ErrorContent = getProvidersError ? (
         <Box
             display="flex"
