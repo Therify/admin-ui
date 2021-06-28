@@ -78,7 +78,7 @@ export const useCreateProvider = (config?: MatchesApiConfig) => {
 };
 
 export const useUpdateProvider = (config?: MatchesApiConfig) => {
-    const { createErrorAlert } = useAlerts();
+    const { createErrorAlert, createSuccessAlert } = useAlerts();
     const [isUpdatingProvider, setIsUpdatingProvider] = useState(false);
     const [updateProviderError, setUpdateProviderError] = useState<string | undefined>(undefined);
     const updateProvider = async (provider: Partial<MatchTypes.Provider & { id: string }>) => {
@@ -87,7 +87,7 @@ export const useUpdateProvider = (config?: MatchesApiConfig) => {
         try {
             const results = await ProvidersApi.updateProvider(provider);
             console.log({ updateResults: results });
-            // setProvider(results);
+            if (config?.withAlerts) createSuccessAlert('Successfully updated provider data!');
         } catch (error) {
             setUpdateProviderError(error.message);
             if (config?.withAlerts) createErrorAlert(error.message);
