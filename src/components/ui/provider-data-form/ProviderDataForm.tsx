@@ -15,7 +15,7 @@ import {
     Gender,
 } from '../../../types/';
 import { ChipSelectBox } from './ChipSelectBox';
-import { validateEmail, validateRequired, validateWebsiteUrl } from './validators';
+import { validateEmail, validateRequired, validateWebsiteUrl, isChangesToProvider } from './validators';
 
 interface ProviderDataFormProps {
     provider: MatchTypes.Provider;
@@ -256,7 +256,26 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                         </Box>
                         <Box display="flex" justifyContent="flex-end">
                             <Button
-                                disabled={Object.keys(touched).length === 0}
+                                disabled={
+                                    Object.keys(touched).length === 0 &&
+                                    isChangesToProvider(provider, {
+                                        ...provider,
+                                        emailAddress,
+                                        firstName,
+                                        lastName,
+                                        websiteUrl,
+                                        nameOfPractice,
+                                        gender,
+                                        rate,
+                                        yearsOfExperience,
+                                        license,
+                                        licensedStates,
+                                        acceptedInsurance,
+                                        race,
+                                        specialties,
+                                        therapeuticPractices,
+                                    })
+                                }
                                 color="primary"
                                 variant="contained"
                                 type="submit"

@@ -1,3 +1,7 @@
+import deepEqual from 'deep-equal';
+export const isChangesToProvider = (original: Record<string, unknown>, current: Record<string, unknown>) => {
+    return deepEqual(original, current);
+};
 export const validateRequired = ({ val, fieldName }: { val: string | number; fieldName: string }) => {
     let isValid = true;
     if (val === undefined) {
