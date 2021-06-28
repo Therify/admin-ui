@@ -17,7 +17,6 @@ export const ProviderEditor = () => {
         isLoadingProvider,
         updateProvider,
         isUpdatingProvider,
-        updateProviderError,
     } = useProvidersApi({ withAlerts: true });
     const handleSubmit = async (provider: Partial<MatchTypes.Provider>) => {
         updateProvider({
