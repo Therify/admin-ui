@@ -41,7 +41,16 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
     const [specialties, setSpecialties] = useState(provider.specialties);
     const [therapeuticPractices, setTherapeuticPractices] = useState(provider.therapeuticPractices);
 
-    console.log({ provider });
+    const validateRequired = ({ val, fieldName }: { val: string | number; fieldName: string }) => {
+        let isValid = true;
+        if (val === undefined) {
+            isValid = false;
+        }
+        if (typeof val === 'string') {
+            isValid = val !== '';
+        }
+        return isValid ? undefined : `${fieldName} is required`;
+    };
     const validateWebsiteUrl = () => {
         let url;
         if (!websiteUrl) return undefined;
@@ -82,7 +91,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                 })
             }
         >
-            {() => (
+            {({ touched }) => (
                 <Form
                     style={{
                         position: 'relative',
@@ -110,6 +119,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                     <Field
                                         variant="outlined"
                                         component={TextField}
+                                        validate={() => validateRequired({ fieldName: 'First name', val: firstName })}
                                         name="firstName"
                                         type="text"
                                         label="First Name"
@@ -126,6 +136,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                         type="text"
                                         label="Last Name"
                                         value={lastName}
+                                        validate={() => validateRequired({ fieldName: 'Last name', val: lastName })}
                                         onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                             setLastName(ev.target.value)
                                         }
@@ -185,9 +196,16 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                         type="number"
                                         label="Years Of Experience"
                                         value={yearsOfExperience}
-                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-                                            setYearsOfExperience(parseInt(ev.target.value))
+                                        validate={() =>
+                                            validateRequired({
+                                                fieldName: 'Years of experienece',
+                                                val: yearsOfExperience,
+                                            })
                                         }
+                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
+                                            const years = parseInt(ev.target.value);
+                                            setYearsOfExperience(isNaN(years) ? 0 : years);
+                                        }}
                                         style={{ marginRight: spacing(2) }}
                                     />
                                     <Field
@@ -197,6 +215,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                         type="number"
                                         label="Rate"
                                         value={rate}
+                                        validate={() => validateRequired({ fieldName: 'Rate', val: rate })}
                                         onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                             setRate(parseInt(ev.target.value))
                                         }
@@ -264,6 +283,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                         </Box>
                         <Box display="flex" justifyContent="flex-end">
                             <Button
+                                disabled={Object.keys(touched).length === 0}
                                 color="primary"
                                 variant="contained"
                                 type="submit"
