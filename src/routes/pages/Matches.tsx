@@ -18,13 +18,8 @@ import {
 } from '../../components/ui';
 import { MatchTypes } from '../../types';
 import { useTheme, Box, CircularProgress } from '@material-ui/core';
-import {
-    useMatchesApi,
-    useCreateRanking,
-    useGetMatches,
-    useDenyMatch,
-    useApproveMatch,
-} from '../../hooks/useMatchesApi';
+import { useCreateRanking, useGetMatches, useDenyMatch, useApproveMatch } from '../../hooks/useMatchesApi';
+import { useProvidersApi } from '../../hooks/useProvidersApi';
 import { MatchesList, CreateMatchModal, Navigation } from '../../components';
 import { countMatchQualities } from '../../utils/MatchQuality';
 import { CompanyIds, CompanyNames } from '../../types/company';
@@ -35,7 +30,7 @@ export const Matches = () => {
     const matchesBulkActionsConfig: SplitButtonOption[] = [{ value: 'APPROVE_SELECTED', text: 'Approve Selected' }];
     const [showBulkApproveModal, setShowBulkApproveModal] = useState(false);
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-    const { isLoadingProviders, getProviders, getProvidersError, providers } = useMatchesApi();
+    const { isLoadingProviders, getProviders, getProvidersError, providers } = useProvidersApi();
     const { approveMatchesForUser, bulkApproveMatchesByUserIds, isApprovingMatch } = useApproveMatch({
         withAlerts: true,
     });

@@ -7,14 +7,14 @@ export const mockProvider: Provider = {
     lastName: 'Jackson',
     licensedStates: ['Tennessee'],
     acceptedInsurance: ['Cigna'],
-    gender: 'male',
+    gender: 'Male',
     race: ['Black or African American'],
     specialties: ['Stress'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     rate: 10,
     yearsOfExperience: 5,
-    theraputicPractices: [],
+    therapeuticPractices: [],
 };
 export const mockProvider2: Provider = {
     id: 'xx3',
@@ -24,14 +24,14 @@ export const mockProvider2: Provider = {
     lastName: 'Jameson',
     licensedStates: ['Tennessee'],
     acceptedInsurance: ['Cigna'],
-    gender: 'male',
+    gender: 'Male',
     race: ['Black or African American'],
     specialties: ['Stress'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     rate: 10,
     yearsOfExperience: 5,
-    theraputicPractices: [],
+    therapeuticPractices: [],
 };
 
 export const mockProvider3: Provider = {
@@ -42,13 +42,13 @@ export const mockProvider3: Provider = {
     lastName: 'Johnson',
     licensedStates: ['Tennessee'],
     acceptedInsurance: ['Cigna'],
-    gender: 'male',
+    gender: 'Male',
     race: ['Black or African American'],
     specialties: ['Stress'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     rate: 10,
     yearsOfExperience: 5,
-    theraputicPractices: [],
+    therapeuticPractices: [],
 };
 export const mockProviders: Provider[] = [mockProvider, mockProvider2, mockProvider3];
