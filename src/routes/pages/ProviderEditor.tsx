@@ -59,6 +59,8 @@ export const ProviderEditor = () => {
                     LoadingContent ??
                     (provider && (
                         <ProviderDataForm
+                            title={`${provider.firstName} ${provider.lastName}`}
+                            subtitle={provider.nameOfPractice}
                             provider={provider}
                             isSubmitting={isUpdatingProvider}
                             onSubmit={handleSubmit}
