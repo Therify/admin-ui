@@ -11,9 +11,10 @@ interface ChipSelectBoxProps {
     chips: string[];
     autoSelectList: string[];
     placeholder?: string;
+    validate?: () => string | undefined;
 }
 
-export const ChipSelectBox = ({ chips, onListChange, autoSelectList, placeholder }: ChipSelectBoxProps) => {
+export const ChipSelectBox = ({ chips, onListChange, autoSelectList, placeholder, validate }: ChipSelectBoxProps) => {
     const { palette, spacing } = useTheme();
     const [isInputOpened, setIsInputOpened] = useState(false);
     const addItem = (item: string | null) => {
@@ -24,40 +25,44 @@ export const ChipSelectBox = ({ chips, onListChange, autoSelectList, placeholder
         if (item === null) return;
         onListChange(chips.filter((chip) => item !== chip));
     };
+    const error = validate?.();
     return (
-        <Box display="flex" flexWrap="wrap">
-            {isInputOpened && (
-                <Box display="flex">
-                    <Autocomplete
-                        data-testid="chip-select"
-                        options={autoSelectList}
-                        renderInput={(params) => <TextField {...params} label={placeholder} />}
-                        style={{ minWidth: '200px' }}
-                        onChange={(_, value) => addItem(value)}
-                    />
-                    <Button onClick={() => setIsInputOpened(false)}>
-                        <Close />
+        <Box>
+            <Box display="flex" flexWrap="wrap">
+                {isInputOpened && (
+                    <Box display="flex">
+                        <Autocomplete
+                            data-testid="chip-select"
+                            options={autoSelectList}
+                            renderInput={(params) => <TextField {...params} label={placeholder} />}
+                            style={{ minWidth: '200px' }}
+                            onChange={(_, value) => addItem(value)}
+                        />
+                        <Button onClick={() => setIsInputOpened(false)}>
+                            <Close />
+                        </Button>
+                    </Box>
+                )}
+                {chips.map((chip) => (
+                    <Chip key={chip}>
+                        <TextSmall style={{ margin: 0 }}>{chip}</TextSmall>
+                        <IconButton
+                            component="span"
+                            aria-label="Remove item"
+                            style={{ color: palette.primary.contrastText }}
+                            onClick={() => removeItem(chip)}
+                        >
+                            <Close color="inherit" style={{ fontSize: spacing(2) }} />
+                        </IconButton>
+                    </Chip>
+                ))}
+                {!isInputOpened && (
+                    <Button onClick={() => setIsInputOpened(true)}>
+                        <Add />
                     </Button>
-                </Box>
-            )}
-            {chips.map((chip) => (
-                <Chip key={chip}>
-                    <TextSmall style={{ margin: 0 }}>{chip}</TextSmall>
-                    <IconButton
-                        component="span"
-                        aria-label="Remove item"
-                        style={{ color: palette.primary.contrastText }}
-                        onClick={() => removeItem(chip)}
-                    >
-                        <Close color="inherit" style={{ fontSize: spacing(2) }} />
-                    </IconButton>
-                </Chip>
-            ))}
-            {!isInputOpened && (
-                <Button onClick={() => setIsInputOpened(true)}>
-                    <Add />
-                </Button>
-            )}
+                )}
+            </Box>
+            {error && <TextSmall color="error">{error}</TextSmall>}
         </Box>
     );
 };
