@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Box, List, ListItemIcon, ListItem, useTheme, Button, CircularProgress } from '@material-ui/core';
-import { Person } from '@material-ui/icons';
+import { Person, Add } from '@material-ui/icons';
 import {
     Header1,
     TextSmall,
@@ -18,6 +18,7 @@ import { MatchTypes } from '../../types';
 
 export const Providers = () => {
     const theme = useTheme();
+    const history = useHistory();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedPractice, setSelectedPractice] = useState('all');
     const { getProviders, providers, isLoadingProviders, getProvidersError } = useProvidersApi({ withAlerts: true });
@@ -82,7 +83,11 @@ export const Providers = () => {
             <Box style={{ padding: theme.spacing(3, 6, 0, 6) }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Header1>Providers</Header1>
-                    <Box>
+                </Box>
+
+                <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={3}>
+                    <SelectGroup configs={selectConfigs} />
+                    <Box display="flex" alignItems="center">
                         <SearchBar
                             label="Search for matches"
                             value={searchTerm}
@@ -90,11 +95,10 @@ export const Providers = () => {
                             onClear={() => setSearchTerm('')}
                             style={{ marginRight: theme.spacing(1) }}
                         />
+                        <Button onClick={() => history.push('/providers/create')}>
+                            Add new <Add />
+                        </Button>
                     </Box>
-                </Box>
-
-                <Box display="flex" justifyContent="flex-end" alignItems="center" marginTop={3}>
-                    <SelectGroup configs={selectConfigs} />
                 </Box>
                 <Divider margin={`${theme.spacing(2)}px 0 0`} />
                 {ErrorContent ?? LoadingContent ?? EmptyFilterContent ?? (
