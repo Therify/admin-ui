@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { Box, Button, useTheme } from '@material-ui/core';
 import { ChevronLeft } from '@material-ui/icons';
@@ -8,8 +8,8 @@ import { MatchTypes } from '../../types';
 
 export const CreateProvider = () => {
     const { spacing } = useTheme();
-    const { goBack } = useHistory();
-    const { createProvider, isCreatingProvider } = useProvidersApi({ withAlerts: true });
+    const history = useHistory();
+    const { createProvider, createdProvider, isCreatingProvider } = useProvidersApi({ withAlerts: true });
     const blankProvider: Partial<MatchTypes.Provider> = {
         emailAddress: '',
         firstName: '',
@@ -31,11 +31,17 @@ export const CreateProvider = () => {
             ...provider,
         });
     };
+
+    useEffect(() => {
+        if (createdProvider?.id) {
+            history.replace(`/providers/${createdProvider.id}`);
+        }
+    }, [createdProvider]);
     return (
         <NavDrawerPage drawer={Navigation}>
             <Box style={{ padding: spacing(3, 6, 0, 6) }}>
                 <Box display="flex" alignItems="center">
-                    <Button onClick={goBack} style={{ marginRight: spacing(2) }}>
+                    <Button onClick={history.goBack} style={{ marginRight: spacing(2) }}>
                         <ChevronLeft />
                     </Button>
                 </Box>
