@@ -40,11 +40,11 @@ export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSu
     const [emailAddress, setEmailAddress] = useState(provider.emailAddress ?? '');
     const [firstName, setfirstName] = useState(provider.firstName ?? '');
     const [lastName, setLastName] = useState(provider.lastName ?? '');
-    const [websiteUrl, setWebsiteUrl] = useState(provider.websiteUrl);
-    const [nameOfPractice, setNameOfPractice] = useState(provider.nameOfPractice);
+    const [websiteUrl, setWebsiteUrl] = useState(provider.websiteUrl ?? '');
+    const [nameOfPractice, setNameOfPractice] = useState(provider.nameOfPractice ?? '');
     const [gender, setGender] = useState(provider.gender ?? 'Male');
-    const [rate, setRate] = useState(provider.rate ?? 0);
-    const [yearsOfExperience, setYearsOfExperience] = useState(provider.yearsOfExperience ?? 0);
+    const [rate, setRate] = useState(`${provider.rate}` ?? '0');
+    const [yearsOfExperience, setYearsOfExperience] = useState(`${provider.yearsOfExperience}` ?? 0);
     const [license, setLicense] = useState(provider.license);
     const [licensedStates, setLicensedStates] = useState(provider.licensedStates ?? []);
     const [acceptedInsurance, setAcceptedInsurance] = useState(provider.acceptedInsurance ?? []);
@@ -67,7 +67,10 @@ export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSu
     return (
         <Formik
             initialValues={provider}
-            onSubmit={async () =>
+            onSubmit={async () => {
+                if (isNaN(parseInt(rate)) || isNaN(parseInt(yearsOfExperience))) {
+                    throw new Error(`${isNaN(parseInt(rate)) ? 'Rate' : 'Years of experience'} must be a number`);
+                }
                 onSubmit({
                     emailAddress,
                     firstName,
@@ -75,16 +78,16 @@ export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSu
                     websiteUrl,
                     nameOfPractice,
                     gender,
-                    rate,
-                    yearsOfExperience,
+                    rate: parseInt(rate),
+                    yearsOfExperience: parseInt(yearsOfExperience),
                     license,
                     licensedStates,
                     acceptedInsurance,
                     race,
                     specialties,
                     therapeuticPractices,
-                })
-            }
+                });
+            }}
         >
             {({ touched, errors }) => (
                 <Form
@@ -158,7 +161,7 @@ export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSu
                                     type="text"
                                     label="Website Url"
                                     value={websiteUrl ?? ''}
-                                    validate={() => validateWebsiteUrl(websiteUrl ?? '')}
+                                    validate={() => validateWebsiteUrl({ websiteUrl, isRequired: true })}
                                     onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                         setWebsiteUrl(ev.target.value)
                                     }
@@ -170,6 +173,12 @@ export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSu
                                     type="text"
                                     label="Name of Practice"
                                     value={nameOfPractice ?? ''}
+                                    validate={() =>
+                                        validateRequired({
+                                            fieldName: 'Name of practice',
+                                            val: nameOfPractice,
+                                        })
+                                    }
                                     onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                         setNameOfPractice(ev.target.value)
                                     }
@@ -200,11 +209,9 @@ export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSu
                                                 val: yearsOfExperience,
                                             })
                                         }
-                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
-                                            const years = parseInt(ev.target.value);
-                                            setYearsOfExperience(isNaN(years) ? 0 : years);
-                                        }}
-                                        onBlur={() => checkFormValidity(errors)}
+                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
+                                            setYearsOfExperience(ev.target.value)
+                                        }
                                         style={{ marginRight: spacing(2) }}
                                     />
                                     <Field
@@ -215,10 +222,7 @@ export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSu
                                         label="Rate"
                                         value={rate}
                                         validate={() => validateRequired({ fieldName: 'Rate', val: rate })}
-                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-                                            setRate(parseInt(ev.target.value))
-                                        }
-                                        onBlur={() => checkFormValidity(errors)}
+                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setRate(ev.target.value)}
                                         style={{ marginRight: spacing(2) }}
                                     />
                                     <Field
@@ -228,10 +232,15 @@ export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSu
                                         type="text"
                                         label="License"
                                         value={license}
+                                        validate={() =>
+                                            validateRequired({
+                                                fieldName: 'License',
+                                                val: license,
+                                            })
+                                        }
                                         onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                             setLicense(ev.target.value)
                                         }
-                                        onBlur={() => checkFormValidity(errors)}
                                     />
                                 </Box>
                                 <Divider margin={spacing(0, 0, 2, 0)} />

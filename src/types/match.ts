@@ -36,9 +36,9 @@ export type Provider = {
     createdAt: string;
     updatedAt: string;
     rate: number;
-    license?: string;
-    websiteUrl?: string;
-    nameOfPractice?: string;
+    license: string;
+    websiteUrl: string;
+    nameOfPractice: string;
 };
 export interface MatchPreferenceQualifier {
     preference: string | string[];
