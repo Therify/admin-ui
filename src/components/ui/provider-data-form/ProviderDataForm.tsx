@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, FormikErrors } from 'formik';
 import { Box, withStyles, useTheme, Button, CircularProgress } from '@material-ui/core';
 import { TextField } from 'formik-material-ui';
 import { Select, SelectOption, TextSmall, Divider, Text, Header1 } from '../core/';
@@ -15,37 +15,62 @@ import {
     Gender,
 } from '../../../types/';
 import { ChipSelectBox } from './ChipSelectBox';
-import { validateEmail, validateRequired, validateWebsiteUrl, isChangesToProvider } from './validators';
+import {
+    validateEmail,
+    validateRequired,
+    validateWebsiteUrl,
+    isChangesToProvider,
+    validateArrayNotEmpty,
+    isFormError,
+} from './validators';
 
 interface ProviderDataFormProps {
-    provider: MatchTypes.Provider;
+    provider: Partial<MatchTypes.Provider>;
+    title?: string;
+    subtitle?: string;
     isSubmitting: boolean;
     onSubmit: (provider: Partial<MatchTypes.Provider>) => Promise<void>;
 }
 const getOptions = (values: string[]) => values.map((value) => ({ value, text: value }));
 const genderOptions: SelectOption[] = getOptions([...GENDER_OPTIONS]);
 
-export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderDataFormProps) => {
+export const ProviderDataForm = ({ provider, title, subtitle, isSubmitting, onSubmit }: ProviderDataFormProps) => {
     const { spacing, palette, shape } = useTheme();
-    const [emailAddress, setEmailAddress] = useState(provider.emailAddress);
-    const [firstName, setfirstName] = useState(provider.firstName);
-    const [lastName, setLastName] = useState(provider.lastName);
-    const [websiteUrl, setWebsiteUrl] = useState(provider.websiteUrl);
-    const [nameOfPractice, setNameOfPractice] = useState(provider.nameOfPractice);
-    const [gender, setGender] = useState(provider.gender);
-    const [rate, setRate] = useState(provider.rate);
-    const [yearsOfExperience, setYearsOfExperience] = useState(provider.yearsOfExperience);
+    const [isFormValid, setIsFormValid] = useState(false);
+    const [emailAddress, setEmailAddress] = useState(provider.emailAddress ?? '');
+    const [firstName, setfirstName] = useState(provider.firstName ?? '');
+    const [lastName, setLastName] = useState(provider.lastName ?? '');
+    const [websiteUrl, setWebsiteUrl] = useState(provider.websiteUrl ?? '');
+    const [nameOfPractice, setNameOfPractice] = useState(provider.nameOfPractice ?? '');
+    const [gender, setGender] = useState(provider.gender ?? 'Male');
+    const [rate, setRate] = useState(`${provider.rate}` ?? '0');
+    const [yearsOfExperience, setYearsOfExperience] = useState(`${provider.yearsOfExperience}` ?? 0);
     const [license, setLicense] = useState(provider.license);
-    const [licensedStates, setLicensedStates] = useState(provider.licensedStates);
-    const [acceptedInsurance, setAcceptedInsurance] = useState(provider.acceptedInsurance);
-    const [race, setRace] = useState(provider.race);
-    const [specialties, setSpecialties] = useState(provider.specialties);
-    const [therapeuticPractices, setTherapeuticPractices] = useState(provider.therapeuticPractices);
+    const [licensedStates, setLicensedStates] = useState(provider.licensedStates ?? []);
+    const [acceptedInsurance, setAcceptedInsurance] = useState(provider.acceptedInsurance ?? []);
+    const [race, setRace] = useState(provider.race ?? []);
+    const [specialties, setSpecialties] = useState(provider.specialties ?? []);
+    const [therapeuticPractices, setTherapeuticPractices] = useState(provider.therapeuticPractices ?? []);
+    const checkFormValidity = (errors: FormikErrors<Partial<MatchTypes.Provider>>) => {
+        setIsFormValid(
+            !isFormError(
+                ...Object.values(errors),
+                validateArrayNotEmpty({ list: race }),
+                validateArrayNotEmpty({ list: therapeuticPractices }),
+                validateArrayNotEmpty({ list: specialties }),
+                validateArrayNotEmpty({ list: acceptedInsurance }),
+                validateArrayNotEmpty({ list: licensedStates }),
+            ),
+        );
+    };
 
     return (
         <Formik
             initialValues={provider}
-            onSubmit={async () =>
+            onSubmit={async () => {
+                if (isNaN(parseInt(rate)) || isNaN(parseInt(yearsOfExperience))) {
+                    throw new Error(`${isNaN(parseInt(rate)) ? 'Rate' : 'Years of experience'} must be a number`);
+                }
                 onSubmit({
                     emailAddress,
                     firstName,
@@ -53,18 +78,18 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                     websiteUrl,
                     nameOfPractice,
                     gender,
-                    rate,
-                    yearsOfExperience,
+                    rate: parseInt(rate),
+                    yearsOfExperience: parseInt(yearsOfExperience),
                     license,
                     licensedStates,
                     acceptedInsurance,
                     race,
                     specialties,
                     therapeuticPractices,
-                })
-            }
+                });
+            }}
         >
-            {({ touched }) => (
+            {({ touched, errors }) => (
                 <Form
                     style={{
                         position: 'relative',
@@ -78,8 +103,8 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                     }}
                 >
                     <Box marginBottom={3}>
-                        <Text>{provider.nameOfPractice}</Text>
-                        <Header1>{`${provider.firstName} ${provider.lastName}`}</Header1>
+                        {subtitle && <Text>{subtitle}</Text>}
+                        {title && <Header1>{title}</Header1>}
                     </Box>
                     <Box
                         style={{
@@ -136,7 +161,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                     type="text"
                                     label="Website Url"
                                     value={websiteUrl ?? ''}
-                                    validate={() => validateWebsiteUrl(websiteUrl ?? '')}
+                                    validate={() => validateWebsiteUrl({ websiteUrl, isRequired: true })}
                                     onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                         setWebsiteUrl(ev.target.value)
                                     }
@@ -148,6 +173,12 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                     type="text"
                                     label="Name of Practice"
                                     value={nameOfPractice ?? ''}
+                                    validate={() =>
+                                        validateRequired({
+                                            fieldName: 'Name of practice',
+                                            val: nameOfPractice,
+                                        })
+                                    }
                                     onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                         setNameOfPractice(ev.target.value)
                                     }
@@ -159,7 +190,10 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                             name="gender"
                                             options={genderOptions}
                                             selectedValue={gender}
-                                            onChange={(value) => setGender(value as Gender)}
+                                            onChange={(value) => {
+                                                setGender(value as Gender);
+                                                checkFormValidity(errors);
+                                            }}
                                         />
                                     </Box>
                                     <Field
@@ -175,10 +209,9 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                                 val: yearsOfExperience,
                                             })
                                         }
-                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
-                                            const years = parseInt(ev.target.value);
-                                            setYearsOfExperience(isNaN(years) ? 0 : years);
-                                        }}
+                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
+                                            setYearsOfExperience(ev.target.value)
+                                        }
                                         style={{ marginRight: spacing(2) }}
                                     />
                                     <Field
@@ -189,9 +222,7 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                         label="Rate"
                                         value={rate}
                                         validate={() => validateRequired({ fieldName: 'Rate', val: rate })}
-                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-                                            setRate(parseInt(ev.target.value))
-                                        }
+                                        onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setRate(ev.target.value)}
                                         style={{ marginRight: spacing(2) }}
                                     />
                                     <Field
@@ -201,6 +232,12 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                         type="text"
                                         label="License"
                                         value={license}
+                                        validate={() =>
+                                            validateRequired({
+                                                fieldName: 'License',
+                                                val: license,
+                                            })
+                                        }
                                         onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                                             setLicense(ev.target.value)
                                         }
@@ -215,7 +252,11 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                 placeholder="Select race"
                                 chips={race.sort()}
                                 autoSelectList={[...RACE_OPTIONS]}
-                                onListChange={(race: string[]) => setRace(race)}
+                                validate={() => validateArrayNotEmpty({ list: race, fieldName: 'Race' })}
+                                onListChange={(race: string[]) => {
+                                    setRace(race);
+                                    checkFormValidity(errors);
+                                }}
                             />
                         </Box>
                         <Box marginBottom={2}>
@@ -224,7 +265,13 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                 chips={licensedStates.sort()}
                                 autoSelectList={[...STATES]}
                                 placeholder="Select state"
-                                onListChange={(states: string[]) => setLicensedStates(states)}
+                                validate={() =>
+                                    validateArrayNotEmpty({ list: licensedStates, fieldName: 'Licensed States' })
+                                }
+                                onListChange={(states: string[]) => {
+                                    setLicensedStates(states);
+                                    checkFormValidity(errors);
+                                }}
                             />
                         </Box>
                         <Box marginBottom={2}>
@@ -233,7 +280,16 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                 placeholder="Select insurance"
                                 chips={acceptedInsurance.sort()}
                                 autoSelectList={[...INSURANCE_OPTIONS]}
-                                onListChange={(insurances: string[]) => setAcceptedInsurance(insurances)}
+                                validate={() =>
+                                    validateArrayNotEmpty({
+                                        list: acceptedInsurance,
+                                        fieldName: 'Accepted Insurances',
+                                    })
+                                }
+                                onListChange={(insurances: string[]) => {
+                                    setAcceptedInsurance(insurances);
+                                    checkFormValidity(errors);
+                                }}
                             />
                         </Box>
                         <Box marginBottom={2}>
@@ -242,7 +298,11 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                 placeholder="Select specialty"
                                 chips={specialties.sort()}
                                 autoSelectList={[...ISSUE_OPTIONS]}
-                                onListChange={(specialty: string[]) => setSpecialties(specialty)}
+                                validate={() => validateArrayNotEmpty({ list: specialties, fieldName: 'Specialties' })}
+                                onListChange={(specialty: string[]) => {
+                                    setSpecialties(specialty);
+                                    checkFormValidity(errors);
+                                }}
                             />
                         </Box>
                         <Box marginBottom={2}>
@@ -251,14 +311,22 @@ export const ProviderDataForm = ({ provider, isSubmitting, onSubmit }: ProviderD
                                 placeholder="Select practice"
                                 chips={therapeuticPractices.sort()}
                                 autoSelectList={[...THERAPEUTIC_PRACTICES]}
+                                validate={() => {
+                                    checkFormValidity(errors);
+                                    return validateArrayNotEmpty({
+                                        list: therapeuticPractices,
+                                        fieldName: 'Therapeutic Practices',
+                                    });
+                                }}
                                 onListChange={(practices: string[]) => setTherapeuticPractices(practices)}
                             />
                         </Box>
                         <Box display="flex" justifyContent="flex-end">
                             <Button
                                 disabled={
-                                    Object.keys(touched).length === 0 &&
-                                    isChangesToProvider(provider, {
+                                    Object.keys(touched).length === 0 ||
+                                    !isFormValid ||
+                                    !isChangesToProvider(provider, {
                                         ...provider,
                                         emailAddress,
                                         firstName,

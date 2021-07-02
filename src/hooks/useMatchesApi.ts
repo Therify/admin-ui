@@ -1,4 +1,3 @@
-import { MatchTypes } from '../types';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createMatchOptions, MatchesApi } from '../api/MatchesApi';
@@ -13,7 +12,6 @@ export const useMatchesApi = (config?: MatchesApiConfig) => ({
     ...useApproveMatch(config),
     ...useDenyMatch(config),
     ...useCreateRanking(config),
-    // ...useGetProviders(config),
 });
 
 export const useGetMatches = (config?: MatchesApiConfig) => {

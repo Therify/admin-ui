@@ -57,7 +57,7 @@ export const useGetProviderById = (config?: MatchesApiConfig) => {
 };
 
 export const useCreateProvider = (config?: MatchesApiConfig) => {
-    const { createErrorAlert } = useAlerts();
+    const { createErrorAlert, createSuccessAlert } = useAlerts();
     const [createdProvider, setCreatedProvider] = useState<MatchTypes.Provider | undefined>();
     const [isCreatingProvider, setIsCreatingProvider] = useState(false);
     const [createProviderError, setCreateProviderError] = useState<string | undefined>(undefined);
@@ -67,6 +67,8 @@ export const useCreateProvider = (config?: MatchesApiConfig) => {
         try {
             const results = await ProvidersApi.createProvider(provider);
             setCreatedProvider(results);
+            if (config?.withAlerts)
+                createSuccessAlert(`${provider.firstName} ${provider.lastName} created successfully!`);
         } catch (error) {
             setCreateProviderError(error.message);
             if (config?.withAlerts) createErrorAlert(error.message);
