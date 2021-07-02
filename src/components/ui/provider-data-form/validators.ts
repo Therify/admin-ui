@@ -5,7 +5,6 @@ export const isChangesToProvider = (original: Record<string, unknown>, current: 
 export const isFormError = (...args: (string | undefined)[]) => args.some((val) => val !== undefined);
 
 export const validateRequired = ({ val, fieldName }: { val?: string | number; fieldName?: string }) => {
-    console.log({ val });
     let isValid = true;
     if (val === undefined) isValid = false;
     if (val === '') isValid = false;
