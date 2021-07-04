@@ -21,25 +21,29 @@ export type User = {
     updatedAt: string;
 };
 
-export type Provider = {
+export type ProviderRecord = {
     id: string;
+    createdAt: string;
+    updatedAt: string;
+};
+export type ProviderData = {
     emailAddress: string;
     firstName: string;
     lastName: string;
-    licensedStates: string[];
-    acceptedInsurance: string[];
-    yearsOfExperience: number;
-    gender: Gender;
-    race: string[];
-    specialties: string[];
-    therapeuticPractices: string[];
-    createdAt: string;
-    updatedAt: string;
-    rate: number;
     license: string;
     websiteUrl: string;
     nameOfPractice: string;
+    gender: Gender;
+    yearsOfExperience: number;
+    rate: number;
+    licensedStates: string[];
+    acceptedInsurance: string[];
+    race: string[];
+    specialties: string[];
+    therapeuticPractices: string[];
 };
+
+export type Provider = ProviderRecord & ProviderData;
 export interface MatchPreferenceQualifier {
     preference: string | string[];
     isMet: boolean;
