@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Theme, useTheme, withStyles } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
+import { Navigation } from '../../navigation';
 const isExpandedStorageKey = 'theriy:is-nav-drawer-expanded';
 const expandedWidth = '240px';
 const collapsedWidth = '60px';
 const transition = '300ms';
 export type NavDrawerPageProps = {
-    drawer: React.FC<{ isExpanded: boolean }>;
+    drawer?: React.FC<{ isExpanded: boolean }>;
+    hideDrawer?: boolean;
     children: React.ReactNode;
     style?: React.CSSProperties;
 };
 
-export const NavDrawerPage = ({ drawer: Drawer, children, style }: NavDrawerPageProps) => {
+export const NavDrawerPage = ({ drawer, hideDrawer, children, style }: NavDrawerPageProps) => {
+    const Drawer = drawer ?? Navigation;
     const theme = useTheme();
     const [isExpanded, setIsExpanded] = useState(true);
     const width = isExpanded ? expandedWidth : collapsedWidth;
@@ -28,21 +31,23 @@ export const NavDrawerPage = ({ drawer: Drawer, children, style }: NavDrawerPage
 
     return (
         <Grid container style={{ flexWrap: 'nowrap' }}>
-            <Box
-                height="100vh"
-                overflow="auto"
-                display="flex"
-                flexDirection="column"
-                style={{
-                    overflowX: 'hidden',
-                    transition,
-                    background: theme.palette.background.paper,
-                    width,
-                }}
-            >
-                <Box flexGrow={1}>{<Drawer isExpanded={isExpanded} />}</Box>
-                <Expander isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)} />
-            </Box>
+            {!hideDrawer && (
+                <Box
+                    height="100vh"
+                    overflow="auto"
+                    display="flex"
+                    flexDirection="column"
+                    style={{
+                        overflowX: 'hidden',
+                        transition,
+                        background: theme.palette.background.paper,
+                        width,
+                    }}
+                >
+                    <Box flexGrow={1}>{<Drawer isExpanded={isExpanded} />}</Box>
+                    <Expander isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)} />
+                </Box>
+            )}
             <Box
                 flexGrow={1}
                 height="100vh"
