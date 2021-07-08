@@ -10,7 +10,7 @@ export const CreateProvider = () => {
     const { spacing } = useTheme();
     const history = useHistory();
     const { createProvider, createdProvider, isCreatingProvider } = useProvidersApi({ withAlerts: true });
-    const blankProvider: Partial<MatchTypes.Provider> = {
+    const blankProvider: MatchTypes.ProviderData = {
         emailAddress: '',
         firstName: '',
         lastName: '',
@@ -22,11 +22,11 @@ export const CreateProvider = () => {
         specialties: [],
         therapeuticPractices: [],
         rate: 0,
-        license: undefined,
-        websiteUrl: undefined,
-        nameOfPractice: undefined,
+        license: '',
+        websiteUrl: '',
+        nameOfPractice: '',
     };
-    const handleSubmit = async (provider: Partial<MatchTypes.Provider>) => {
+    const handleSubmit = async (provider: MatchTypes.ProviderData) => {
         createProvider({
             ...provider,
         });

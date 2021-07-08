@@ -33,10 +33,16 @@ const providersApiCreator = (baseUrl: string) => {
         return axiosData.data as MatchTypes.Provider;
     };
     const createProvider = async (provider: Partial<MatchTypes.Provider>) => {
-        // Add to body
         const { data: axiosData } = await makeRequest(`${baseUrl}/providers`, {
             method: 'POST',
             data: { ...provider },
+        });
+        return axiosData.data as MatchTypes.Provider;
+    };
+    const bulkCreateProviders = async (providers: MatchTypes.ProviderData[]) => {
+        const { data: axiosData } = await makeRequest(`${baseUrl}/providers`, {
+            method: 'POST',
+            data: providers,
         });
         return axiosData.data as MatchTypes.Provider;
     };
@@ -56,6 +62,6 @@ const providersApiCreator = (baseUrl: string) => {
         return axiosData.data as MatchTypes.Provider;
     };
 
-    return { getProviders, getProviderById, createProvider, updateProvider, deleteProvider };
+    return { getProviders, getProviderById, createProvider, bulkCreateProviders, updateProvider, deleteProvider };
 };
 export const ProvidersApi = providersApiCreator(API_BASE_URL);
