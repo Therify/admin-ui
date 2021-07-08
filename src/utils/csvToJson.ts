@@ -18,7 +18,7 @@ export const parseJsonAsProvider = (jsonProvider: Record<string, string>): Match
                             .filter(Boolean),
                     ];
                 } else if (numberKeys.includes(key)) {
-                    return [key, Number(val)];
+                    return [key, Number(val === '' ? NaN : val)];
                 }
                 return [key, val];
             }),
