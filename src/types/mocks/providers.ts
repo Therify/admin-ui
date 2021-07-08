@@ -1,4 +1,20 @@
-import { Provider } from '../match';
+import { Provider, ProviderData } from '../match';
+export const mockProviderData: ProviderData = {
+    emailAddress: 'test.jackson@therapy.com',
+    nameOfPractice: 'test',
+    firstName: 'Test',
+    lastName: 'Jackson',
+    licensedStates: ['Tennessee'],
+    acceptedInsurance: ['Cigna'],
+    gender: 'Male',
+    websiteUrl: 'https://google.com',
+    license: '123abc',
+    race: ['Black or African American'],
+    specialties: ['Stress'],
+    rate: 10,
+    yearsOfExperience: 5,
+    therapeuticPractices: [],
+};
 export const mockProvider: Provider = {
     id: '144',
     emailAddress: 'test.jackson@therapy.com',

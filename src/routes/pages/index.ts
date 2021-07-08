@@ -1,5 +1,6 @@
 export * from './Login';
 export * from './Matches';
-export * from './Providers';
+export * from './ProvidersList';
 export * from './ProviderEditor';
 export * from './CreateProvider';
+export * from './ProviderUpload';

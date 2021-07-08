@@ -61,7 +61,7 @@ export const useCreateProvider = (config?: MatchesApiConfig) => {
     const [createdProvider, setCreatedProvider] = useState<MatchTypes.Provider | undefined>();
     const [isCreatingProvider, setIsCreatingProvider] = useState(false);
     const [createProviderError, setCreateProviderError] = useState<string | undefined>(undefined);
-    const createProvider = async (provider: Partial<MatchTypes.Provider>) => {
+    const createProvider = async (provider: MatchTypes.ProviderData) => {
         setCreateProviderError(undefined);
         setIsCreatingProvider(true);
         try {
@@ -75,7 +75,19 @@ export const useCreateProvider = (config?: MatchesApiConfig) => {
         }
         setIsCreatingProvider(false);
     };
-    return { createdProvider, createProvider, isCreatingProvider, createProviderError };
+    const bulkCreateProviders = async (providers: MatchTypes.ProviderData[]) => {
+        setCreateProviderError(undefined);
+        setIsCreatingProvider(true);
+        try {
+            await ProvidersApi.bulkCreateProviders(providers);
+            if (config?.withAlerts) createSuccessAlert('Providers created successfully!');
+        } catch (error) {
+            setCreateProviderError(error.message);
+            if (config?.withAlerts) createErrorAlert(error.message);
+        }
+        setIsCreatingProvider(false);
+    };
+    return { createdProvider, bulkCreateProviders, createProvider, isCreatingProvider, createProviderError };
 };
 
 export const useUpdateProvider = (config?: MatchesApiConfig) => {

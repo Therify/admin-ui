@@ -25,11 +25,11 @@ import {
 } from './validators';
 
 interface ProviderDataFormProps {
-    provider: Partial<MatchTypes.Provider>;
+    provider: MatchTypes.ProviderData;
     title?: string;
     subtitle?: string;
     isSubmitting: boolean;
-    onSubmit: (provider: Partial<MatchTypes.Provider>) => Promise<void>;
+    onSubmit: (provider: MatchTypes.ProviderData) => Promise<void>;
 }
 const getOptions = (values: string[]) => values.map((value) => ({ value, text: value }));
 const genderOptions: SelectOption[] = getOptions([...GENDER_OPTIONS]);

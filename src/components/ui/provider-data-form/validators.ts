@@ -1,4 +1,5 @@
 import deepEqual from 'deep-equal';
+import { MatchTypes } from '../../../types';
 export const isChangesToProvider = (original: Record<string, unknown>, current: Record<string, unknown>) => {
     return !deepEqual(original, current);
 };
@@ -8,11 +9,12 @@ export const validateRequired = ({ val, fieldName }: { val?: string | number; fi
     let isValid = true;
     if (val === undefined) isValid = false;
     if (val === '') isValid = false;
+    if (typeof val === 'number' && isNaN(val)) return `${fieldName ?? 'Field'} is not a number`;
     return isValid ? undefined : `${fieldName ?? 'Field'} is required`;
 };
 
 export const validateArrayNotEmpty = ({ list, fieldName }: { list: any[]; fieldName?: string }) =>
-    list.length > 0 ? undefined : `${fieldName ?? 'Field'} cannot be empty`;
+    list?.length > 0 ? undefined : `${fieldName ?? 'Field'} cannot be empty`;
 
 export const validateWebsiteUrl = ({ websiteUrl, isRequired }: { websiteUrl: string; isRequired?: boolean }) => {
     let url;
@@ -32,3 +34,23 @@ export const validateEmail = (emailAddress?: string) => {
     }
     return undefined;
 };
+
+export const getProviderDataErrors = (provider: MatchTypes.ProviderData) => ({
+    firstName: validateRequired({ val: provider.firstName, fieldName: 'First name' }),
+    lastName: validateRequired({ val: provider.lastName, fieldName: 'Last name' }),
+    nameOfPractice: validateRequired({ val: provider.nameOfPractice, fieldName: 'Name of practice' }),
+    emailAddress: validateEmail(provider.emailAddress),
+    websiteUrl: validateWebsiteUrl({ websiteUrl: provider.websiteUrl, isRequired: true }),
+    yearsOfExperience: validateRequired({ val: provider.yearsOfExperience, fieldName: 'Years of experience' }),
+    rate: validateRequired({ val: provider.rate, fieldName: 'Rate' }),
+    license: validateRequired({ val: provider.license, fieldName: 'License' }),
+    gender: validateRequired({ val: provider.gender, fieldName: 'Gender' }),
+    licensedStates: validateArrayNotEmpty({ list: provider.licensedStates, fieldName: 'Licensed states' }),
+    acceptedInsurance: validateArrayNotEmpty({ list: provider.acceptedInsurance, fieldName: 'Accepted insurance' }),
+    race: validateArrayNotEmpty({ list: provider.race, fieldName: 'Race' }),
+    specialties: validateArrayNotEmpty({ list: provider.specialties, fieldName: 'Specialties' }),
+    therapeuticPractices: validateArrayNotEmpty({
+        list: provider.therapeuticPractices,
+        fieldName: 'Therapeutic practices',
+    }),
+});

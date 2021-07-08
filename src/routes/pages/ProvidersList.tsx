@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Box, List, ListItemIcon, ListItem, useTheme, Button, CircularProgress } from '@material-ui/core';
-import { Person, Add } from '@material-ui/icons';
+import { Box, List, ListItemIcon, ListItem, useTheme, Button, CircularProgress, IconButton } from '@material-ui/core';
+import { Person as PersonIcon, Add as AddIcon, CloudUpload as CloudUploadIcon } from '@material-ui/icons';
 import {
     Header1,
     TextSmall,
@@ -83,6 +83,9 @@ export const Providers = () => {
             <Box style={{ padding: theme.spacing(3, 6, 0, 6) }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Header1>Providers</Header1>
+                    <IconButton onClick={() => history.push('/providers/upload')}>
+                        <CloudUploadIcon />
+                    </IconButton>
                 </Box>
 
                 <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={3}>
@@ -96,7 +99,7 @@ export const Providers = () => {
                             style={{ marginRight: theme.spacing(1) }}
                         />
                         <Button onClick={() => history.push('/providers/create')}>
-                            Add new <Add />
+                            Add new <AddIcon />
                         </Button>
                     </Box>
                 </Box>
@@ -124,7 +127,7 @@ export const Providers = () => {
                                     }}
                                 >
                                     <ListItemIcon>
-                                        <Person />
+                                        <PersonIcon />
                                     </ListItemIcon>
                                     <Text color="textSecondary">{`${provider.lastName}, ${provider.firstName}`}</Text>
                                     {provider.nameOfPractice && (
