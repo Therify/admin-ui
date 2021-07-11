@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useTheme, Box, CircularProgress, Button } from '@material-ui/core';
+import { Refresh } from '@material-ui/icons';
 import {
     NavDrawerPage,
     Header1,
@@ -17,7 +19,6 @@ import {
     SplitButtonOption,
 } from '../../components/ui';
 import { MatchTypes } from '../../types';
-import { useTheme, Box, CircularProgress } from '@material-ui/core';
 import { useCreateRanking, useGetMatches, useDenyMatch, useApproveMatch } from '../../hooks/useMatchesApi';
 import { useProvidersApi } from '../../hooks/useProvidersApi';
 import { MatchesList, CreateMatchModal, Navigation } from '../../components';
@@ -142,14 +143,28 @@ export const Matches = () => {
                         />
                         <SelectGroup configs={selectConfigs} />
                     </Box>
-                    <Box marginTop={1} display="flex" alignItems="center">
-                        <Checkbox onClick={handleCheckAll} checked={allUsersSelected} />
-                        <TextSmall style={{ marginLeft: theme.spacing(1), marginBottom: 0 }}>
-                            {selectedUserIds.length > 0 && selectedUserIds.length === matches.length
-                                ? 'Deselect all'
-                                : 'Select all'}
-                        </TextSmall>
-                    </Box>
+                    {allMatches.length > 0 && (
+                        <Box marginTop={1} display="flex" alignItems="center">
+                            <Box display="flex" alignItems="center">
+                                <Checkbox onClick={handleCheckAll} checked={allUsersSelected} />
+                                <TextSmall style={{ marginLeft: theme.spacing(1), marginBottom: 0 }}>
+                                    {selectedUserIds.length > 0 && selectedUserIds.length === matches.length
+                                        ? 'Deselect all'
+                                        : 'Select all'}
+                                </TextSmall>
+                            </Box>
+                            <Button
+                                variant="text"
+                                onClick={getMatches}
+                                style={{ textTransform: 'none', marginLeft: theme.spacing(2) }}
+                            >
+                                <TextSmall style={{ marginRight: theme.spacing(1), marginBottom: 0 }}>
+                                    Referesh matches
+                                </TextSmall>
+                                <Refresh fontSize="small" />
+                            </Button>
+                        </Box>
+                    )}
                     <Divider margin={`${theme.spacing(2)}px 0 0`} />
                 </Box>
                 <MatchesList
