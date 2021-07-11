@@ -143,7 +143,7 @@ export const Matches = () => {
                         />
                         <SelectGroup configs={selectConfigs} />
                     </Box>
-                    {allMatches.length == 0 && (
+                    {allMatches.length > 0 && (
                         <Box marginTop={1} display="flex" alignItems="center">
                             <Box display="flex" alignItems="center">
                                 <Checkbox onClick={handleCheckAll} checked={allUsersSelected} />
