@@ -143,7 +143,7 @@ export const Matches = () => {
                         />
                         <SelectGroup configs={selectConfigs} />
                     </Box>
-                    {allMatches.length > 0 && (
+                    {allMatches.length == 0 && (
                         <Box marginTop={1} display="flex" alignItems="center">
                             <Box display="flex" alignItems="center">
                                 <Checkbox onClick={handleCheckAll} checked={allUsersSelected} />
@@ -159,7 +159,7 @@ export const Matches = () => {
                                 style={{ textTransform: 'none', marginLeft: theme.spacing(2) }}
                             >
                                 <TextSmall style={{ marginRight: theme.spacing(1), marginBottom: 0 }}>
-                                    Referesh matches
+                                    Refresh matches
                                 </TextSmall>
                                 <Refresh fontSize="small" />
                             </Button>
