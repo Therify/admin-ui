@@ -5,7 +5,7 @@ import { ProviderRanking } from '../provider-ranking';
 import { MatchTypes } from '../../../types';
 import { PreferencesGrid } from '../preferences-grid';
 import { ApprovalButton } from '../approval-button';
-import { getCompayNameById } from '../../../utils/idMappings';
+import { getCompanyNameById } from '../../../utils/idMappings';
 
 export type MatchesCardProps = {
     isChecked: boolean;
@@ -53,7 +53,7 @@ export const MatchesCard = ({
         >
             <Checkbox data-testid="user-card-checkbox" checked={isChecked} onClick={onCheck} />
             <Box flexGrow="1" style={{ paddingLeft: theme.spacing(3) }}>
-                <TextSmall>{getCompayNameById(companyId)}</TextSmall>
+                <TextSmall>{getCompanyNameById(companyId)}</TextSmall>
                 <Header3>{emailAddress}</Header3>
                 <TextSmall style={{ paddingTop: theme.spacing(1) }}>Provider Preferences</TextSmall>
                 <PreferencesGrid

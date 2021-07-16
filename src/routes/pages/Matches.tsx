@@ -24,7 +24,7 @@ import { useProvidersApi } from '../../hooks/useProvidersApi';
 import { MatchesList, CreateMatchModal, Navigation } from '../../components';
 import { countMatchQualities } from '../../utils/MatchQuality';
 import { CompanyIds, CompanyNames } from '../../types/company';
-import { getCompayNameById } from '../../utils/idMappings';
+import { getCompanyNameById } from '../../utils/idMappings';
 
 export const Matches = () => {
     const theme = useTheme();
@@ -78,6 +78,7 @@ export const Matches = () => {
             options: [
                 { value: 'all', text: 'all' },
                 { value: CompanyIds.CriticalMass, text: CompanyNames.CriticalMass },
+                { value: CompanyIds.Indeed, text: CompanyNames.Indeed },
                 { value: CompanyIds.Therify, text: CompanyNames.Therify },
                 { value: CompanyIds.Thumbtack, text: CompanyNames.Thumbtack },
             ],
@@ -91,9 +92,9 @@ export const Matches = () => {
     const getNoMatchesMessage = () => {
         let message;
         if (companyFilter !== 'all' && searchTerm !== '') {
-            message = `${searchTerm} in ${getCompayNameById(companyFilter)}`;
+            message = `${searchTerm} in ${getCompanyNameById(companyFilter)}`;
         } else {
-            message = companyFilter !== 'all' ? getCompayNameById(companyFilter) : searchTerm;
+            message = companyFilter !== 'all' ? getCompanyNameById(companyFilter) : searchTerm;
         }
         return message ? `No matches for ${message}` : undefined;
     };

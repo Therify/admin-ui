@@ -1,14 +1,14 @@
 import { CompanyIds, CompanyNames } from '../types/company';
-import { getCompayNameById } from './idMappings';
+import { getCompanyNameById } from './idMappings';
 
 describe('idMappings', () => {
-    describe('getCompayNameById', () => {
+    describe('getCompanyNameById', () => {
         it("should return 'unknown company' if unmatched id provided", () => {
-            expect(getCompayNameById('blahblahblah' as CompanyIds)).toBe('unknown company');
+            expect(getCompanyNameById('blahblahblah' as CompanyIds)).toBe('unknown company');
         });
 
         it('should return company name if recognized id', () => {
-            expect(getCompayNameById(CompanyIds.Therify)).toBe(CompanyNames.Therify);
+            expect(getCompanyNameById(CompanyIds.Therify)).toBe(CompanyNames.Therify);
         });
     });
 });
