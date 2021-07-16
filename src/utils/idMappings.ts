@@ -1,14 +1,5 @@
-import { CompanyIds, CompanyNames } from '../types/company';
+import { CompanyIds, CompanyMap, CompanyNames } from '../types/company';
 
-export const getCompayNameById = (id: string): CompanyNames | 'unknown company' => {
-    switch (id) {
-        case CompanyIds.CriticalMass:
-            return CompanyNames.CriticalMass;
-        case CompanyIds.Therify:
-            return CompanyNames.Therify;
-        case CompanyIds.Thumbtack:
-            return CompanyNames.Thumbtack;
-        default:
-            return 'unknown company';
-    }
+export const getCompanyNameById = (id: string): CompanyNames | 'unknown company' => {
+    return CompanyMap[id as CompanyIds] ?? 'unknown company';
 };
