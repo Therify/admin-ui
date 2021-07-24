@@ -25,3 +25,32 @@ export const sortByNameOfPractice = (providers: MatchTypes.Provider[]) => {
         return [...providers, ...providersByNameOfPractice[practiceName]];
     }, []);
 };
+
+export const ensureProviderArrayTypes = (provider: MatchTypes.Provider): MatchTypes.Provider => {
+    const {
+        licensedStates = [],
+        acceptedInsurance = [],
+        race = [],
+        specialties = [],
+        therapeuticPractices = [],
+    } = provider;
+    if (
+        !Array.isArray(licensedStates) ||
+        !Array.isArray(acceptedInsurance) ||
+        !Array.isArray(race) ||
+        !Array.isArray(specialties) ||
+        !Array.isArray(therapeuticPractices)
+    ) {
+        console.log({ ProviderWithoutArray: provider });
+    }
+    return {
+        ...provider,
+        licensedStates: Array.isArray(licensedStates) ? licensedStates : Object.values(licensedStates),
+        acceptedInsurance: Array.isArray(acceptedInsurance) ? acceptedInsurance : Object.values(acceptedInsurance),
+        race: Array.isArray(race) ? race : Object.values(race),
+        specialties: Array.isArray(specialties) ? specialties : Object.values(specialties),
+        therapeuticPractices: Array.isArray(therapeuticPractices)
+            ? therapeuticPractices
+            : Object.values(therapeuticPractices),
+    };
+};
