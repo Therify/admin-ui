@@ -1,6 +1,6 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import { MatchTypes } from '../types';
-import { sortByNameOfPractice } from './utils/providerHelpers';
+import { ensureProviderArrayTypes, sortByNameOfPractice } from './utils/providerHelpers';
 
 const makeFakeRequest = ({ url, config }: any) =>
     new Promise<any>((resolve) => {
@@ -26,11 +26,11 @@ const providersApiCreator = (baseUrl: string) => {
     };
     const getProviders = async (queryString?: string) => {
         const { data: axiosData } = await makeRequest(`${baseUrl}/providers${queryString}`);
-        return sortByNameOfPractice(axiosData.data as MatchTypes.Provider[]);
+        return sortByNameOfPractice(axiosData.data as MatchTypes.Provider[]).map(ensureProviderArrayTypes);
     };
     const getProviderById = async (id: string) => {
         const { data: axiosData } = await makeRequest(`${baseUrl}/providers/${id}`);
-        return axiosData.data as MatchTypes.Provider;
+        return ensureProviderArrayTypes(axiosData.data as MatchTypes.Provider);
     };
     const createProvider = async (provider: Partial<MatchTypes.Provider>) => {
         const { data: axiosData } = await makeRequest(`${baseUrl}/providers`, {
