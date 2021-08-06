@@ -18,7 +18,13 @@ export const SelectGroup = ({ configs }: SelectGroupProps) => {
     return (
         <Box>
             {configs.map(({ id, options, name, onChange, selectedValue }, i) => (
-                <Box id={id} key={id} display="inline-block" marginRight={i === configs.length - 1 ? 0 : 0.5}>
+                <Box
+                    id={id}
+                    key={id}
+                    display="inline-block"
+                    marginTop={1}
+                    marginRight={i === configs.length - 1 ? 0 : 0.5}
+                >
                     <Select name={name} options={options} selectedValue={selectedValue} onChange={onChange} />
                 </Box>
             ))}
