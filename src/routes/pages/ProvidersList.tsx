@@ -14,13 +14,27 @@ import {
     SelectConfig,
 } from '../../components';
 import { useProvidersApi } from '../../hooks/useProvidersApi';
-import { MatchTypes } from '../../types';
+import { GENDER_OPTIONS, STATES, RACE_OPTIONS, ISSUE_OPTIONS, INSURANCE_OPTIONS, MatchTypes } from '../../types';
+import {
+    providerMatchesGender,
+    providerMatchesInsurance,
+    providerMatchesIssue,
+    providerMatchesPractice,
+    providerMatchesRace,
+    providerMatchesSearchTerm,
+    providerMatchesState,
+} from '../../utils/providerFilterConditions';
 
 export const Providers = () => {
     const theme = useTheme();
     const history = useHistory();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedPractice, setSelectedPractice] = useState('all');
+    const [selectedGender, setSelectedGender] = useState('any');
+    const [selectedRace, setSelectedRace] = useState('any');
+    const [selectedInsurance, setSelectedInsurance] = useState('any');
+    const [selectedState, setSelectedState] = useState('any');
+    const [selectedIssue, setSelectedIssue] = useState('any');
     const { getProviders, providers, isLoadingProviders, getProvidersError } = useProvidersApi({ withAlerts: true });
     const [filteredProviders, setFilteredProviders] = useState(providers);
     const practices = new Set(providers.map(({ nameOfPractice }) => nameOfPractice));
@@ -38,6 +52,71 @@ export const Providers = () => {
             selectedValue: selectedPractice,
             onChange: setSelectedPractice,
         },
+        {
+            options: [
+                { value: 'any', text: 'Any Gender' },
+                ...Array.from(GENDER_OPTIONS, (gender) => ({
+                    value: gender,
+                    text: gender,
+                })),
+            ],
+            id: 'gender',
+            name: 'Gender Select',
+            selectedValue: selectedGender,
+            onChange: setSelectedGender,
+        },
+        {
+            options: [
+                { value: 'any', text: 'Any Race' },
+                ...Array.from(RACE_OPTIONS, (race) => ({
+                    value: race,
+                    text: race,
+                })),
+            ],
+            id: 'race',
+            name: 'Race Select',
+            selectedValue: selectedRace,
+            onChange: setSelectedRace,
+        },
+        {
+            options: [
+                { value: 'any', text: 'Any Insurance' },
+                ...Array.from(INSURANCE_OPTIONS, (insurance) => ({
+                    value: insurance,
+                    text: insurance,
+                })),
+            ],
+            id: 'insurance',
+            name: 'Insurance Select',
+            selectedValue: selectedInsurance,
+            onChange: setSelectedInsurance,
+        },
+        {
+            options: [
+                { value: 'any', text: 'Any State' },
+                ...Array.from(STATES, (insurance) => ({
+                    value: insurance,
+                    text: insurance,
+                })),
+            ],
+            id: 'state',
+            name: 'State Select',
+            selectedValue: selectedState,
+            onChange: setSelectedState,
+        },
+        {
+            options: [
+                { value: 'any', text: 'Any Issue' },
+                ...Array.from(ISSUE_OPTIONS, (issue) => ({
+                    value: issue,
+                    text: issue,
+                })),
+            ],
+            id: 'issue',
+            name: 'Issue Select',
+            selectedValue: selectedIssue,
+            onChange: setSelectedIssue,
+        },
     ];
     useEffect(() => {
         getProviders();
@@ -45,9 +124,13 @@ export const Providers = () => {
     useEffect(() => {
         const filteredProviders = providers.reduce<MatchTypes.Provider[]>((acc, provider) => {
             const conditions = [
-                searchTerm === '' ||
-                    `${provider.firstName} ${provider.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()),
-                selectedPractice === 'all' || provider.nameOfPractice === selectedPractice,
+                providerMatchesSearchTerm(searchTerm, provider),
+                providerMatchesPractice(selectedPractice, provider),
+                providerMatchesGender(selectedGender, provider),
+                providerMatchesRace(selectedRace, provider),
+                providerMatchesInsurance(selectedInsurance, provider),
+                providerMatchesState(selectedState, provider),
+                providerMatchesIssue(selectedIssue, provider),
             ];
             if (conditions.every((status) => status === true)) {
                 acc.push(provider);
@@ -55,7 +138,16 @@ export const Providers = () => {
             return acc;
         }, []);
         setFilteredProviders(filteredProviders);
-    }, [selectedPractice, searchTerm, providers]);
+    }, [
+        selectedPractice,
+        searchTerm,
+        providers,
+        selectedGender,
+        selectedRace,
+        selectedInsurance,
+        selectedState,
+        selectedIssue,
+    ]);
     const ErrorContent = getProvidersError ? (
         <Box
             display="flex"
@@ -88,7 +180,7 @@ export const Providers = () => {
                     </IconButton>
                 </Box>
 
-                <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={3}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={2}>
                     <SelectGroup configs={selectConfigs} />
                     <Box display="flex" alignItems="center">
                         <SearchBar
