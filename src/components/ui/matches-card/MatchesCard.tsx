@@ -90,7 +90,7 @@ export const MatchesCard = ({
                         rankings.map((ranking, i) => (
                             <ProviderRanking
                                 key={ranking.id}
-                                id={ranking.id}
+                                id={ranking.provider.id}
                                 status={ranking.status}
                                 statusText={ranking.statusReason}
                                 displayText={`${ranking.provider.firstName} ${ranking.provider.lastName}`}
