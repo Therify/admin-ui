@@ -1,4 +1,4 @@
-import { Box, Theme, useTheme, withStyles } from '@material-ui/core';
+import { Box, Link, Theme, useTheme, withStyles } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import { MatchTypes } from '../../../types';
 import React from 'react';
@@ -51,7 +51,13 @@ export const ProviderRanking = ({ id, status, rank, displayText, statusText, onD
             >
                 <div style={flexCenter}>
                     {rank && <TextSmall style={{ width: theme.spacing(3), margin: 0 }}>{rank}.</TextSmall>}
-                    <TextBold style={{ margin: 0 }}>{displayText}</TextBold>
+                    <Link
+                        href={`${window.location.origin}/providers/${id}`}
+                        target="_blank"
+                        style={{ color: theme.palette.text.primary }}
+                    >
+                        <TextBold style={{ margin: 0 }}>{displayText}</TextBold>
+                    </Link>
                 </div>
                 {statusText && <Text style={{ margin: 0, color: textColor }}>{statusText}</Text>}
             </Box>
