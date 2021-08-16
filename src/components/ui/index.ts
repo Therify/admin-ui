@@ -1,6 +1,7 @@
 export * from './core';
 export * from './layout';
 export * from './alert';
+export * from './date-chip';
 export * from './select-group';
 export * from './match-counter';
 export * from './matches-card';

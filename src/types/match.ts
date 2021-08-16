@@ -1,6 +1,7 @@
 import { CompanyIds } from './company';
 import { Gender } from './types';
 export type Match = {
+    created: number;
     user: User;
     matches: Ranking[];
 };
