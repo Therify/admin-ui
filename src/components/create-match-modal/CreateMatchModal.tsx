@@ -97,6 +97,7 @@ export const CreateMatchModal = ({
                                 <ProviderRanking
                                     data-testid="provider-ranking"
                                     id="selectedProviderStatus"
+                                    providerId={selectedProvider.id}
                                     displayText={(matchCompatibility.reasons ?? []).join(', ')}
                                     status={matchCompatibility.status}
                                 />

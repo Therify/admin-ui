@@ -6,6 +6,7 @@ import { Text, TextSmall, TextBold } from '../../ui';
 
 export type ProviderRankingProps = {
     id: string;
+    providerId: string;
     status: MatchTypes.RankingStatus;
     rank?: number;
     displayText: string;
@@ -33,7 +34,15 @@ const getStatusColor = ({ theme, status }: { status: MatchTypes.RankingStatus; t
             };
     }
 };
-export const ProviderRanking = ({ id, status, rank, displayText, statusText, onDelete }: ProviderRankingProps) => {
+export const ProviderRanking = ({
+    id,
+    providerId,
+    status,
+    rank,
+    displayText,
+    statusText,
+    onDelete,
+}: ProviderRankingProps) => {
     const theme = useTheme();
     const { backgroundColor, textColor } = getStatusColor({ theme, status });
     return (
@@ -52,7 +61,7 @@ export const ProviderRanking = ({ id, status, rank, displayText, statusText, onD
                 <div style={flexCenter}>
                     {rank && <TextSmall style={{ width: theme.spacing(3), margin: 0 }}>{rank}.</TextSmall>}
                     <Link
-                        href={`${window.location.origin}/providers/${id}`}
+                        href={`${window.location.origin}/providers/${providerId}`}
                         target="_blank"
                         style={{ color: theme.palette.text.primary }}
                     >
