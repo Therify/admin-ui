@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { DateChip } from './DateChip';
-import { format, addBusinessDays } from 'date-fns';
+import { format, addBusinessDays, subBusinessDays } from 'date-fns';
 import '@testing-library/jest-dom/extend-expect';
 
 describe('MatchCounter', () => {
@@ -17,5 +17,11 @@ describe('MatchCounter', () => {
         const { getByText } = render(<DateChip type="due" date={date} />);
         const chipDate = getByText(format(addBusinessDays(date, 2), 'MM/dd'));
         expect(chipDate).toBeInTheDocument();
+    });
+
+    it('shows alert icon when due date is today', () => {
+        const { getByTestId } = render(<DateChip type="due" date={subBusinessDays(date, 2)} />);
+        const alertIcon = getByTestId('priority-high-icon');
+        expect(alertIcon).toBeInTheDocument();
     });
 });
