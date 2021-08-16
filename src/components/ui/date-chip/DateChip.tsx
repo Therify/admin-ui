@@ -29,7 +29,7 @@ export const DateChip = ({ type, date }: DateChipProps) => {
         <Chip
             title={type === 'due' ? 'Due Date' : 'Received date'}
             icon={getIcon(type, isDueToday)}
-            label={format(displayDate, 'MM/dd')}
+            label={`${type === 'due' ? 'Due: ' : ''}${format(displayDate, 'MM/dd')}`}
             color={type === 'due' ? 'primary' : undefined}
             style={{ marginRight: spacing(1), backgroundColor: isDueToday ? palette.error.main : undefined }}
         />
