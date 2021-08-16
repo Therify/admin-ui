@@ -35,6 +35,8 @@ export interface IMatch {
     type: ResponseType.Match;
     criteria: Record<string, MatchPreferenceQualifier>;
     score: number;
+    created: string;
+    modified: string;
 }
 
 interface RecordData {

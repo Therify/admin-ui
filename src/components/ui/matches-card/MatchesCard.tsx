@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Paper, Theme, useTheme, withStyles } from '@material-ui/core';
-import { Checkbox, TextSmall, Text, Header3 } from '../../ui';
+import { Checkbox, TextSmall, Text, Header3, DateChip } from '../../ui';
 import { ProviderRanking } from '../provider-ranking';
 import { MatchTypes } from '../../../types';
 import { PreferencesGrid } from '../preferences-grid';
@@ -11,6 +11,7 @@ export type MatchesCardProps = {
     isChecked: boolean;
     onCheck: () => void;
     user: MatchTypes.User;
+    receivedDate: number | Date;
     rankings: (MatchTypes.Ranking & {
         status: MatchTypes.RankingStatus;
         statusReason?: string;
@@ -25,6 +26,7 @@ export const MatchesCard = ({
     onCheck,
     user,
     rankings,
+    receivedDate,
     handleApprove,
     handleCancelApprove,
     handleDeleteMatch,
@@ -63,6 +65,10 @@ export const MatchesCard = ({
                     issues={(issues ?? []).join(', ')}
                     insuranceProvider={insuranceProvider}
                 />
+                <Box display="flex" alignItems="center">
+                    <DateChip type="received" date={receivedDate} />
+                    <DateChip type="due" date={receivedDate} />
+                </Box>
             </Box>
             <Box style={{ width: '45%' }}>
                 <Box

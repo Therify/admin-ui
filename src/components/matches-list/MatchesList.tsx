@@ -79,6 +79,7 @@ export const MatchesList = ({
                     onCheck={() => onCheck(match.user.id)}
                     user={match.user}
                     rankings={match.matches}
+                    receivedDate={match.created}
                     handleApprove={() => handleApprove(match.user.id)}
                     handleDeleteMatch={handleDeleteMatch}
                     handleCreateMatch={() => handleCreateMatch(match)}

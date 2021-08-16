@@ -8,6 +8,7 @@ describe('MatchesCard', () => {
     it('should render patient data', () => {
         const { getByText } = render(
             <MatchesCard
+                receivedDate={new Date()}
                 handleApprove={async () => {}}
                 isChecked={false}
                 onCheck={() => {}}
@@ -28,6 +29,7 @@ describe('MatchesCard', () => {
         const handleCheck = jest.fn();
         const { getByTestId } = render(
             <MatchesCard
+                receivedDate={new Date()}
                 isChecked={false}
                 onCheck={handleCheck}
                 user={Mocks.mockUser}
@@ -43,6 +45,7 @@ describe('MatchesCard', () => {
     it('should render approval button when approvable rankings present', () => {
         const { getByText } = render(
             <MatchesCard
+                receivedDate={new Date()}
                 isChecked={false}
                 onCheck={() => {}}
                 user={Mocks.mockUser}
@@ -57,6 +60,7 @@ describe('MatchesCard', () => {
     it('should NOT render approval button when no approvable rankings present', () => {
         const { getByText } = render(
             <MatchesCard
+                receivedDate={new Date()}
                 isChecked={false}
                 onCheck={() => {}}
                 user={Mocks.mockUser}
