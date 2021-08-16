@@ -38,6 +38,7 @@ const groupMatchRecordsByUser = (matchRecords: MatchRecord[]): MatchTypes.Match[
         } else {
             map[record.user!.details.id] = {
                 user: record.user!.details,
+                created: new Date(record.match!.created).getTime(),
                 matches: [createMatch(record.match!, record.provider!)],
             };
         }

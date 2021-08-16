@@ -13,6 +13,7 @@ export const mockRanking: Ranking = {
 
 export const mockModelResult: Match = {
     user: mockUser,
+    created: new Date().getTime(),
     matches: [
         {
             ...mockRanking,

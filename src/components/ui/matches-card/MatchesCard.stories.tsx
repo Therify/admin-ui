@@ -12,6 +12,7 @@ export const MatchesCard: Story = () => {
     const [isChecked, setIsChecked] = useState(false);
     return (
         <MatchesCardUi
+            receivedDate={new Date()}
             isChecked={isChecked}
             onCheck={() => setIsChecked(!isChecked)}
             user={Mocks.mockUser}
@@ -30,6 +31,7 @@ export const NoMatchCreation: Story = () => {
     const [isChecked, setIsChecked] = useState(false);
     return (
         <MatchesCardUi
+            receivedDate={new Date()}
             isChecked={isChecked}
             onCheck={() => setIsChecked(!isChecked)}
             user={Mocks.mockUser}
@@ -48,6 +50,7 @@ export const NoApprovableMatches: Story = () => {
     const [isChecked, setIsChecked] = useState(false);
     return (
         <MatchesCardUi
+            receivedDate={new Date()}
             isChecked={isChecked}
             onCheck={() => setIsChecked(!isChecked)}
             user={Mocks.mockUser}
@@ -78,6 +81,7 @@ export const NoMatchesToShow: Story = () => {
     const [isChecked, setIsChecked] = useState(false);
     return (
         <MatchesCardUi
+            receivedDate={new Date()}
             isChecked={isChecked}
             onCheck={() => setIsChecked(!isChecked)}
             user={Mocks.mockUser}

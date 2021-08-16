@@ -21,6 +21,7 @@
         "axios": "^0.21.1",
         "babel-loader": "8.1.0",
         "csvtojson": "^2.0.10",
+        "date-fns": "^2.23.0",
         "deep-equal": "^2.0.5",
         "formik": "^2.2.9",
         "formik-material-ui": "^3.0.1",
@@ -62,7 +63,8 @@
         "build": "react-scripts build",
         "test": "react-scripts test --watchAll=false",
         "eject": "react-scripts eject",
-        "prettify": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css,scss}\" --ignore-path .gitignore"
+        "prettify": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css,scss}\" --ignore-path .gitignore",
+        "storybook": "start-storybook -p 6006"
     },
     "eslintConfig": {
         "extends": [
